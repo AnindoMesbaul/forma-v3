@@ -1,26 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { TopBar } from "@/components/forma/TopBar";
+import { AgentPanel } from "@/components/forma/AgentPanel";
+import { Canvas } from "@/components/forma/Canvas";
+import { NodeDetail } from "@/components/forma/NodeDetail";
+import { ChatBar } from "@/components/forma/ChatBar";
+import { EmptyDropZone } from "@/components/forma/EmptyDropZone";
+import { useForma } from "@/lib/forma/store";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Forma — AI Org Design Canvas" },
+      {
+        name: "description",
+        content:
+          "Upload your org chart and collaborate with an AI agent to redesign your organisation.",
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
+  const { nodes, selectedNodeId } = useForma();
+  const selected = nodes.find((n) => n.id === selectedNodeId) ?? null;
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-background text-foreground">
+      <TopBar />
+      <div className="flex min-h-0 flex-1">
+        <AgentPanel />
+        <main className="relative min-w-0 flex-1">
+          {nodes.length === 0 ? <EmptyDropZone /> : <Canvas />}
+        </main>
+        {selected && <NodeDetail node={selected} />}
+      </div>
+      <ChatBar />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
