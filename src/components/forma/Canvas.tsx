@@ -5,7 +5,7 @@ import ReactFlow, {
   type Edge,
   type Node,
   type NodeMouseHandler,
-  type OnNodeDrag,
+  type NodeDragHandler,
   ReactFlowProvider,
   useReactFlow,
 } from "reactflow";
