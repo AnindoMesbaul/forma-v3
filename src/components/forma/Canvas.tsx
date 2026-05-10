@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect, useState } from "react";
+import { useMemo, useCallback, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -164,6 +164,3 @@ export function Canvas() {
   );
 }
 
-// Suppress unused effect import warning
-const _ = useEffect;
-void _;
