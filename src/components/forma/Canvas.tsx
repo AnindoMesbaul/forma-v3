@@ -91,11 +91,11 @@ function CanvasInner() {
     [getNodes],
   );
 
-  const onNodeDragStart: OnNodeDrag = useCallback((_, node) => {
+  const onNodeDragStart: NodeDragHandler = useCallback((_, node) => {
     setDraggingId(node.id);
   }, []);
 
-  const onNodeDrag: OnNodeDrag = useCallback(
+  const onNodeDrag: NodeDragHandler = useCallback(
     (_, node) => {
       const tgt = findTargetUnder(
         node.position.x + NODE_SIZE.width / 2,
@@ -115,7 +115,7 @@ function CanvasInner() {
     [findTargetUnder, nodes],
   );
 
-  const onNodeDragStop: OnNodeDrag = useCallback(
+  const onNodeDragStop: NodeDragHandler = useCallback(
     (_, node) => {
       const tgt = hoverTargetId;
       setHoverTargetId(null);
