@@ -11,17 +11,14 @@ export function AgentPanel() {
 
   return (
     <aside className="flex h-full w-[320px] shrink-0 flex-col border-r border-border bg-surface">
-      <div className="flex h-9 shrink-0 items-center justify-between border-b border-border px-3">
-        <span className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
-          AI Agent
-        </span>
-        {aiThinking && (
+      {aiThinking && (
+        <div className="flex h-9 shrink-0 items-center justify-end border-b border-border px-3">
           <span className="flex items-center gap-1 text-[11px] text-primary">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
             Thinking
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex shrink-0 border-b border-border">
         <TabButton active={tab === "proposals"} onClick={() => setTab("proposals")}>
