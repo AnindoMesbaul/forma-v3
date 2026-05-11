@@ -8,19 +8,25 @@ export interface OrgNodeData {
   span: number;
   isAiTarget: boolean;
   isSelected: boolean;
+  isFocused: boolean;
+  isDimmed: boolean;
 }
 
 export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
   const violation = isSpanViolation(data.span);
-  const borderClass = data.isAiTarget
-    ? "border-primary"
-    : data.isSelected
-      ? "border-border-strong"
-      : "border-border";
+  const borderClass = data.isFocused
+    ? "border-primary ring-2 ring-primary"
+    : data.isAiTarget
+      ? "border-primary"
+      : data.isSelected
+        ? "border-border-strong"
+        : "border-border";
 
   return (
     <div
-      className={`relative w-[220px] rounded-[6px] border bg-surface px-3 py-2 ${borderClass}`}
+      className={`relative w-[220px] rounded-[6px] border bg-surface px-3 py-2 transition-opacity ${borderClass} ${
+        data.isDimmed ? "opacity-40" : "opacity-100"
+      }`}
     >
       {data.isAiTarget && (
         <span className="absolute -left-1.5 -top-1.5 rounded-[4px] bg-primary px-1 py-px text-[9px] font-bold uppercase tracking-wide text-primary-foreground">
