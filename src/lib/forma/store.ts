@@ -96,6 +96,7 @@ export const useForma = create<FormaState>((set, get) => ({
     if (!p) return;
     const nodes = applyOps(get().nodes, p.ops);
     set({
+      focusedProposalId: get().focusedProposalId === id ? null : get().focusedProposalId,
       nodes,
       proposals: get().proposals.filter((x) => x.id !== id),
       changeLog: [
