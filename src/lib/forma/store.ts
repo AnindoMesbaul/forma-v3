@@ -43,9 +43,12 @@ export const useForma = create<FormaState>((set, get) => ({
   changeLog: [],
   rejectedSignatures: [],
   selectedNodeId: null,
+  focusedProposalId: null,
   chat: [],
   aiThinking: false,
   prefillChat: null,
+
+  focusProposal: (id) => set({ focusedProposalId: id }),
 
   loadCsv: (fileName, nodes) =>
     set({
