@@ -158,7 +158,7 @@ function CanvasInner() {
       onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
-      onPaneClick={() => selectNode(null)}
+      onPaneClick={() => { selectNode(null); focusProposal(null); }}
       fitView
       fitViewOptions={{ padding: 0.2 }}
       proOptions={{ hideAttribution: true }}
