@@ -4,12 +4,20 @@ import type { Proposal } from "@/lib/forma/types";
 import { sendChat } from "./ai-runner";
 
 export function ProposalCard({ proposal }: { proposal: Proposal }) {
-  const { acceptProposal, rejectProposal } = useForma();
+  const { acceptProposal, rejectProposal, focusProposal, focusedProposalId } = useForma();
   const [showModify, setShowModify] = useState(false);
   const [modifyText, setModifyText] = useState("");
+  const isFocused = focusedProposalId === proposal.id;
+
+  const stop = (e: React.MouseEvent | React.KeyboardEvent) => e.stopPropagation();
 
   return (
-    <div className="rounded-[6px] border border-border bg-surface p-3">
+    <div
+      onClick={() => focusProposal(isFocused ? null : proposal.id)}
+      className={`cursor-pointer rounded-[6px] border bg-surface p-3 transition-colors hover:bg-surface-2 ${
+        isFocused ? "border-primary ring-1 ring-primary" : "border-border"
+      }`}
+    >
       <div className="flex items-start gap-2">
         {proposal.source === "ai" && (
           <span className="mt-px rounded-[4px] bg-primary/15 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary">
@@ -30,17 +38,19 @@ export function ProposalCard({ proposal }: { proposal: Proposal }) {
       )}
 
       {showModify ? (
-        <div className="mt-2.5 flex flex-col gap-2">
+        <div className="mt-2.5 flex flex-col gap-2" onClick={stop}>
           <textarea
             value={modifyText}
             onChange={(e) => setModifyText(e.target.value)}
+            onClick={stop}
             placeholder="How should this proposal change?"
             className="resize-none rounded-[6px] border border-border bg-background p-2 text-[12px] outline-none focus:border-primary"
             rows={2}
           />
           <div className="flex gap-1.5">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                stop(e);
                 if (modifyText.trim()) {
                   rejectProposal(proposal.id);
                   sendChat(`Refine this proposal "${proposal.summary}": ${modifyText}`);
@@ -53,7 +63,7 @@ export function ProposalCard({ proposal }: { proposal: Proposal }) {
               Send
             </button>
             <button
-              onClick={() => setShowModify(false)}
+              onClick={(e) => { stop(e); setShowModify(false); }}
               className="rounded-[6px] border border-border px-2 py-1 text-[12px] text-muted-foreground hover:bg-surface-2"
             >
               Cancel
@@ -63,19 +73,19 @@ export function ProposalCard({ proposal }: { proposal: Proposal }) {
       ) : (
         <div className="mt-3 flex gap-1.5">
           <button
-            onClick={() => acceptProposal(proposal.id)}
+            onClick={(e) => { stop(e); acceptProposal(proposal.id); }}
             className="rounded-[6px] bg-success px-2.5 py-1 text-[12px] font-medium text-success-foreground hover:opacity-90"
           >
             Accept
           </button>
           <button
-            onClick={() => rejectProposal(proposal.id)}
+            onClick={(e) => { stop(e); rejectProposal(proposal.id); }}
             className="rounded-[6px] bg-destructive/15 px-2.5 py-1 text-[12px] font-medium text-destructive hover:bg-destructive/25"
           >
             Reject
           </button>
           <button
-            onClick={() => setShowModify(true)}
+            onClick={(e) => { stop(e); setShowModify(true); }}
             className="rounded-[6px] border border-border px-2.5 py-1 text-[12px] text-muted-foreground hover:bg-surface-2"
           >
             Modify

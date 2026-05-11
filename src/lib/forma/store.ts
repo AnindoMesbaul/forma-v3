@@ -15,6 +15,7 @@ interface FormaState {
   changeLog: ChangeLogEntry[];
   rejectedSignatures: string[];
   selectedNodeId: string | null;
+  focusedProposalId: string | null;
   chat: ChatMessage[];
   aiThinking: boolean;
 
@@ -22,6 +23,7 @@ interface FormaState {
   selectNode: (id: string | null) => void;
   reparent: (nodeId: string, newManagerId: string | null) => void;
   updateNode: (nodeId: string, patch: Partial<OrgNode>) => void;
+  focusProposal: (id: string | null) => void;
 
   setProposals: (proposals: Proposal[]) => void;
   addProposals: (proposals: Proposal[]) => void;
@@ -41,9 +43,12 @@ export const useForma = create<FormaState>((set, get) => ({
   changeLog: [],
   rejectedSignatures: [],
   selectedNodeId: null,
+  focusedProposalId: null,
   chat: [],
   aiThinking: false,
   prefillChat: null,
+
+  focusProposal: (id) => set({ focusedProposalId: id }),
 
   loadCsv: (fileName, nodes) =>
     set({
@@ -91,6 +96,7 @@ export const useForma = create<FormaState>((set, get) => ({
     if (!p) return;
     const nodes = applyOps(get().nodes, p.ops);
     set({
+      focusedProposalId: get().focusedProposalId === id ? null : get().focusedProposalId,
       nodes,
       proposals: get().proposals.filter((x) => x.id !== id),
       changeLog: [
@@ -110,6 +116,7 @@ export const useForma = create<FormaState>((set, get) => ({
     const p = get().proposals.find((x) => x.id === id);
     if (!p) return;
     set({
+      focusedProposalId: get().focusedProposalId === id ? null : get().focusedProposalId,
       proposals: get().proposals.filter((x) => x.id !== id),
       rejectedSignatures: [...get().rejectedSignatures, opsSignature(p.ops)],
       changeLog: [
