@@ -28,11 +28,6 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
         data.isDimmed ? "opacity-40" : "opacity-100"
       }`}
     >
-      {data.isAiTarget && (
-        <span className="absolute -left-1.5 -top-1.5 rounded-[4px] bg-primary px-1 py-px text-[9px] font-bold uppercase tracking-wide text-primary-foreground">
-          AI
-        </span>
-      )}
       <Handle type="target" position={Position.Top} className="!bg-border-strong" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
