@@ -18,8 +18,8 @@ import { isDescendant } from "@/lib/forma/org";
 const nodeTypes = { org: OrgNodeCard };
 
 function CanvasInner() {
-  const { nodes, proposals, selectedNodeId, selectNode, reparent } = useForma();
-  const { getNodes } = useReactFlow();
+  const { nodes, proposals, selectedNodeId, selectNode, reparent, focusedProposalId, focusProposal } = useForma();
+  const { getNodes, fitView } = useReactFlow();
   const [hoverTargetId, setHoverTargetId] = useState<string | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [invalidDrop, setInvalidDrop] = useState(false);
@@ -30,7 +30,22 @@ function CanvasInner() {
     return s;
   }, [proposals]);
 
+  const focusedIds = useMemo(() => {
+    const p = proposals.find((x) => x.id === focusedProposalId);
+    return new Set(p?.affectedNodeIds ?? []);
+  }, [proposals, focusedProposalId]);
+
   const positions = useMemo(() => layoutTree(nodes), [nodes]);
+
+  useEffect(() => {
+    if (focusedIds.size === 0) return;
+    const ids = Array.from(focusedIds);
+    const nodesToFocus = ids.map((id) => ({ id }));
+    const t = setTimeout(() => {
+      fitView({ nodes: nodesToFocus, padding: 0.4, duration: 600, maxZoom: 1.2 });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [focusedIds, fitView]);
 
   const rfNodes: Node<OrgNodeData>[] = useMemo(
     () =>
@@ -45,10 +60,12 @@ function CanvasInner() {
           span: n.span ?? 0,
           isAiTarget: aiTargetIds.has(n.id),
           isSelected: selectedNodeId === n.id,
+          isFocused: focusedIds.has(n.id),
+          isDimmed: focusedIds.size > 0 && !focusedIds.has(n.id),
         },
         draggable: true,
       })),
-    [nodes, positions, aiTargetIds, selectedNodeId],
+    [nodes, positions, aiTargetIds, selectedNodeId, focusedIds],
   );
 
   const rfEdges: Edge[] = useMemo(
