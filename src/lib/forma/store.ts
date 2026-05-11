@@ -116,6 +116,7 @@ export const useForma = create<FormaState>((set, get) => ({
     const p = get().proposals.find((x) => x.id === id);
     if (!p) return;
     set({
+      focusedProposalId: get().focusedProposalId === id ? null : get().focusedProposalId,
       proposals: get().proposals.filter((x) => x.id !== id),
       rejectedSignatures: [...get().rejectedSignatures, opsSignature(p.ops)],
       changeLog: [
