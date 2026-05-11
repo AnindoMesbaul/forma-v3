@@ -30,12 +30,14 @@ function Index() {
       <TopBar />
       <div className="flex min-h-0 flex-1">
         <AgentPanel />
-        <main className="relative min-w-0 flex-1">
-          {nodes.length === 0 ? <EmptyDropZone /> : <Canvas />}
-        </main>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <main className="relative min-h-0 flex-1">
+            {nodes.length === 0 ? <EmptyDropZone /> : <Canvas />}
+          </main>
+          <ChatBar />
+        </div>
         {selected && <NodeDetail node={selected} />}
       </div>
-      <ChatBar />
     </div>
   );
 }
