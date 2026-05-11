@@ -23,6 +23,7 @@ interface FormaState {
   selectNode: (id: string | null) => void;
   reparent: (nodeId: string, newManagerId: string | null) => void;
   updateNode: (nodeId: string, patch: Partial<OrgNode>) => void;
+  focusProposal: (id: string | null) => void;
 
   setProposals: (proposals: Proposal[]) => void;
   addProposals: (proposals: Proposal[]) => void;
