@@ -4,12 +4,20 @@ import type { Proposal } from "@/lib/forma/types";
 import { sendChat } from "./ai-runner";
 
 export function ProposalCard({ proposal }: { proposal: Proposal }) {
-  const { acceptProposal, rejectProposal } = useForma();
+  const { acceptProposal, rejectProposal, focusProposal, focusedProposalId } = useForma();
   const [showModify, setShowModify] = useState(false);
   const [modifyText, setModifyText] = useState("");
+  const isFocused = focusedProposalId === proposal.id;
+
+  const stop = (e: React.MouseEvent | React.KeyboardEvent) => e.stopPropagation();
 
   return (
-    <div className="rounded-[6px] border border-border bg-surface p-3">
+    <div
+      onClick={() => focusProposal(isFocused ? null : proposal.id)}
+      className={`cursor-pointer rounded-[6px] border bg-surface p-3 transition-colors hover:bg-surface-2 ${
+        isFocused ? "border-primary ring-1 ring-primary" : "border-border"
+      }`}
+    >
       <div className="flex items-start gap-2">
         {proposal.source === "ai" && (
           <span className="mt-px rounded-[4px] bg-primary/15 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary">
