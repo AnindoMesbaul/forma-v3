@@ -15,6 +15,7 @@ interface FormaState {
   changeLog: ChangeLogEntry[];
   rejectedSignatures: string[];
   selectedNodeId: string | null;
+  focusedProposalId: string | null;
   chat: ChatMessage[];
   aiThinking: boolean;
 
