@@ -24,28 +24,28 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
 
   return (
     <div
-      className={`relative w-[220px] rounded-[6px] border bg-surface px-3 py-2 transition-opacity ${borderClass} ${
+      className={`relative w-[240px] rounded-[6px] border bg-surface px-3.5 py-2.5 shadow-[var(--shadow-panel)] transition-opacity ${borderClass} ${
         data.isDimmed ? "opacity-40" : "opacity-100"
       }`}
     >
       <Handle type="target" position={Position.Top} className="!bg-border-strong" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-medium text-foreground">
+          <div className="truncate text-[14px] font-medium text-foreground">
             {data.name}
           </div>
-          <div className="truncate text-[12px] text-muted-foreground">
+          <div className="truncate text-[13px] text-muted-foreground">
             {data.title}
           </div>
         </div>
       </div>
-      <div className="mt-1.5 flex items-center justify-between">
-        <span className="rounded-[4px] bg-secondary px-1.5 py-px text-[10px] text-muted-foreground">
+      <div className="mt-2 flex items-center justify-between">
+        <span className="rounded-[4px] bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
           {data.department || "—"}
         </span>
         {data.span > 0 && (
           <span
-            className={`text-[11px] tabular-nums ${
+            className={`text-[12px] tabular-nums ${
               violation ? "text-destructive" : "text-muted-foreground"
             }`}
           >

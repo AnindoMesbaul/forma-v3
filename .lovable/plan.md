@@ -1,39 +1,52 @@
-## Goal
+# Improve readability while keeping it sleek
 
-Make proposal cards clickable. When clicked, the canvas zooms into and highlights the affected nodes.
+The app uses a near-black background (`oklch(0.145)`), 13px base font, dim muted text (`oklch(0.5)`), and 11–12px UI elements. Result: hard to read, cramped controls. This plan tunes the design tokens and a few component sizings — no functional changes.
 
-## Changes
+## 1. Lighten and warm the dark palette (`src/styles.css`)
 
-**1. `src/lib/forma/store.ts`**
-- Add `focusedProposalId: string | null` and `focusProposal(id: string | null)` action.
-- Clear `focusedProposalId` automatically when proposals change or canvas pane is clicked.
+- `--background`: `0.145` → `0.19` (softer slate, less harsh)
+- `--surface`: `0.18` → `0.235` (panels distinct from bg)
+- `--surface-2`: `0.21` → `0.275`
+- `--foreground`: `0.937` → `0.97` (crisper primary text)
+- `--muted-foreground`: `0.5` → `0.66` (meets WCAG AA on new bg)
+- `--border`: `0.245` → `0.32`
+- `--border-strong`: `0.32` → `0.42`
+- `--primary`: lightness `0.55` → `0.62` so it pops against lighter bg
 
-**2. `src/components/forma/ProposalCard.tsx`**
-- Wrap card body in a clickable region (button/div with `onClick`) that calls `focusProposal(proposal.id)`.
-- Stop propagation on Accept/Reject/Modify buttons and the modify textarea so they don't re-trigger focus.
-- Add a "focused" visual state (primary border + subtle ring) when `focusedProposalId === proposal.id`.
-- Add hover affordance (cursor-pointer, hover bg).
+Stays dark-only.
 
-**3. `src/components/forma/Canvas.tsx`**
-- Read `focusedProposalId` and `proposals` from the store.
-- When `focusedProposalId` changes, compute the set of affected node IDs from that proposal and call `reactFlowInstance.fitView({ nodes: [...], padding: 0.4, duration: 600 })` to smoothly zoom in.
-- Pass a new `isFocused` flag to nodes whose IDs are in the focused proposal's `affectedNodeIds`, in addition to the existing `isAiTarget`.
-- Clear focus on `onPaneClick`.
+## 2. Bigger base typography
 
-**4. `src/components/forma/OrgNodeCard.tsx`**
-- Accept `isFocused` in `OrgNodeData`.
-- When `isFocused`, render a stronger highlight: thicker primary border + ring/glow (using existing tokens, e.g. `ring-2 ring-primary`), overriding the default border.
-- Non-focused nodes during a focus session get a slightly dimmed look (e.g. `opacity-60`) so the focused subset stands out. Only apply dimming when *some* proposal is focused.
+In `html, body`:
+- font size `13px` → `14.5px`
+- line height `1.45` → `1.55`
 
-## Behavior details
+Then sweep small text:
+- `TopBar`: `h-12` → `h-14`, stats `text-[12px]` → `text-[13px]`, buttons `px-2.5 py-1` → `px-3 py-1.5`
+- `OrgNodeCard`: width `220 → 240`, name `13 → 14px`, title `12 → 13px`, dept badge `10 → 11px`, padding `px-3 py-2` → `px-3.5 py-2.5`
+- `ProposalCard`, `ChangeLog`, `NodeDetail`, `AgentPanel`, `ChatBar`: replace any `text-[11px]/[12px]` with `text-xs`/`text-sm`; section headers `text-sm font-medium`
 
-- Clicking a different proposal re-focuses and re-zooms.
-- Clicking the focused proposal again (or clicking the canvas background) clears focus and restores full opacity. No auto fitView-out — user can use existing controls.
-- Accept/Reject of the focused proposal clears focus.
-- Affected nodes: use `proposal.affectedNodeIds` (already on the type and already used to mark `isAiTarget`).
+## 3. Larger interactive targets
 
-## Out of scope
+- Buttons get `min-h-8`
+- Costs dropdown: `py-1.5 → py-2`, width `w-56 → w-64`
+- Widen `AgentPanel` and `NodeDetail` by ~24px for breathing room (verify current width during implementation)
 
-- No new data on proposals.
-- No keyboard navigation between proposals.
-- No animation beyond the built-in `fitView` duration.
+## 4. Subtle elevation so panels read as layers
+
+Add to `styles.css`:
+```
+--shadow-panel: 0 1px 0 0 color-mix(in oklab, white 4%, transparent),
+                0 8px 24px -12px rgba(0,0,0,0.5);
+```
+Apply on `TopBar`, `AgentPanel`, `NodeDetail`, costs dropdown via `shadow-[var(--shadow-panel)]`. Keeps the flat Linear vibe without the everything-is-one-black-slab feel.
+
+## What stays the same
+
+Component logic, store, AI runner, routing, shadcn primitives, 6px radius, tabular-nums for numbers — all untouched.
+
+## Out of scope (ask if wanted)
+
+- Light theme toggle
+- Restyling React Flow edges/handles beyond node size
+- New icon set / logo redesign
