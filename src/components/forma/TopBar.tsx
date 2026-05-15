@@ -28,7 +28,7 @@ function FormaLogo() {
           strokeLinejoin="round"
         />
       </svg>
-      <span className="font-medium tracking-tight">FORMA</span>
+      <span className="font-display text-[18px] font-medium tracking-tight">FORMA</span>
     </div>
   );
 }
@@ -48,18 +48,13 @@ export function TopBar() {
   }
   const sortedLayers = [...layerCosts.entries()].sort((a, b) => a[0] - b[0]);
 
-  const handleFile = async (file: File) => {
-    const text = await file.text();
-    const parsed = parseOrgCsv(text);
-    loadCsv(file.name, parsed);
-    runAnalysis();
-  };
-
   const navBtn =
-    "min-h-8 rounded-[8px] border border-white/20 bg-transparent px-3 py-1.5 font-medium text-white hover:bg-sage-core";
+    "rounded-[10px] border border-white/25 bg-transparent px-[18px] py-[9px] text-[13px] font-medium text-white transition-colors hover:bg-sage-core hover:border-sage-core";
+  const ctaBtn =
+    "rounded-[10px] border border-amber-accent bg-amber-accent px-[18px] py-[9px] text-[13px] font-medium text-white transition-opacity hover:opacity-90";
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-chalk bg-sage-deep px-4 text-white">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-sage-deep bg-sage-deep px-5 text-white">
       <FormaLogo />
 
       <div className="flex items-center gap-5 text-[13px]">
@@ -81,9 +76,9 @@ export function TopBar() {
             >
               <button className={navBtn}>Costs</button>
               {costsOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-[8px] border border-chalk bg-canvas text-ink">
-                  <div className="flex items-center justify-between border-b border-chalk bg-parchment px-3 py-2">
-                    <span className="text-[11px] font-medium uppercase tracking-wide text-slate">
+                <div className="absolute right-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-[12px] border border-chalk bg-white text-ink shadow-[var(--shadow-raised)]">
+                  <div className="flex items-center justify-between border-b border-chalk bg-canvas px-3.5 py-2.5">
+                    <span className="text-[11px] font-medium uppercase tracking-[0.05em] text-slate">
                       Total
                     </span>
                     <span className="font-medium tabular-nums text-ink">
@@ -94,7 +89,7 @@ export function TopBar() {
                     {sortedLayers.map(([layer, cost]) => (
                       <div
                         key={layer}
-                        className="flex items-center justify-between px-3 py-2"
+                        className="flex items-center justify-between px-3.5 py-2 text-[13px] hover:bg-canvas"
                       >
                         <span className="text-slate">Layer {layer}</span>
                         <span className="tabular-nums text-ink">
@@ -103,7 +98,7 @@ export function TopBar() {
                       </div>
                     ))}
                     {sortedLayers.length === 0 && (
-                      <div className="px-3 py-2 text-slate">No salary data</div>
+                      <div className="px-3.5 py-2 text-[13px] text-slate">No salary data</div>
                     )}
                   </div>
                 </div>
@@ -112,7 +107,7 @@ export function TopBar() {
           </>
         )}
 
-        <button onClick={() => inputRef.current?.click()} className={navBtn}>
+        <button onClick={() => inputRef.current?.click()} className={ctaBtn}>
           Upload CSV
         </button>
         <input
@@ -122,11 +117,21 @@ export function TopBar() {
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) handleFile(f);
+            if (f) handleFileLoad(f, loadCsv);
             e.target.value = "";
           }}
         />
       </div>
     </header>
   );
+}
+
+async function handleFileLoad(
+  file: File,
+  loadCsv: (name: string, parsed: ReturnType<typeof parseOrgCsv>) => void,
+) {
+  const text = await file.text();
+  const parsed = parseOrgCsv(text);
+  loadCsv(file.name, parsed);
+  runAnalysis();
 }

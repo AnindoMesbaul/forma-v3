@@ -30,11 +30,11 @@ export function EmptyDropZone() {
           const f = e.dataTransfer.files?.[0];
           if (f) handleFile(f);
         }}
-        className={`flex h-[320px] w-[520px] cursor-pointer flex-col items-center justify-center rounded-[6px] border border-dashed bg-surface px-8 text-center transition-colors ${
-          drag ? "border-primary bg-surface-2" : "border-border-strong"
+        className={`flex h-[320px] w-[520px] cursor-pointer flex-col items-center justify-center rounded-[12px] border border-dashed bg-white px-8 text-center transition-colors ${
+          drag ? "border-sage-deep bg-healthy-bg" : "border-chalk"
         }`}
       >
-        <h1 className="text-[15px] font-semibold text-foreground">
+        <h1 className="font-display text-[28px] font-light leading-tight text-ink">
           Drop your org CSV here or click to upload
         </h1>
         <p className="mt-2 text-muted-foreground">

@@ -1,41 +1,81 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=Geist:wght@300;400;500&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 /*
  * Forma — sage / parchment design system.
- * Flat surfaces, no shadows, no gradients.
+ * Flat surfaces with warm green-tinted shadows.
  */
 
 @theme {
-  --color-sage-deep:       #1F5C41;
-  --color-sage-core:       #3A9268;
-  --color-sage-light:      #B0DEC9;
-  --color-amber-accent:    #C8860F;
-  --color-amber-glow:      #F5E6C3;
-  --color-parchment:       #FAF8F4;
-  --color-canvas:          #F0EDE5;
-  --color-chalk:           #D4CFC5;
-  --color-slate:           #7A756A;
-  --color-ink:             #1C1A17;
-  --color-healthy:         #1A5C38;
-  --color-healthy-bg:      #E8F5EE;
-  --color-borderline:      #A06500;
-  --color-borderline-bg:   #FFF6E0;
-  --color-violation:       #8B2F26;
-  --color-violation-bg:    #FFF0EE;
-  --color-ai:              #3D3A9E;
-  --color-ai-bg:           #EEF0FF;
+  /* Brand */
+  --color-sage-deep:        #1F5C41;
+  --color-sage-core:        #3A9268;
+  --color-sage-light:       #B0DEC9;
+  --color-amber-accent:     #C8860F;
+  --color-amber-glow:       #F5E6C3;
+
+  /* Neutrals */
+  --color-parchment:        #FAF8F4;
+  --color-canvas:           #F0EDE5;
+  --color-chalk:            #D4CFC5;
+  --color-slate:            #7A756A;
+  --color-ink:              #1C1A17;
+
+  /* Semantic */
+  --color-healthy:          #1A5C38;
+  --color-healthy-bg:       #E8F5EE;
+  --color-healthy-border:   #B0DEC9;
+  --color-borderline:       #A06500;
+  --color-borderline-bg:    #FFF6E0;
+  --color-violation:        #8B2F26;
+  --color-violation-bg:     #FFF0EE;
+  --color-violation-border: #8B2F26;
+  --color-ai:               #3D3A9E;
+  --color-ai-bg:            #EEF0FF;
+  --color-ai-border:        #3D3A9E;
+
+  /* Typography */
+  --font-display:   'Fraunces', Georgia, serif;
+  --font-sans:      'Geist', 'SF Pro Text', -apple-system, sans-serif;
+
+  /* Border radius */
+  --radius-sm:      6px;
+  --radius-md:      10px;
+  --radius-lg:      12px;
+  --radius-pill:    999px;
+
+  /* Shadows — warm green tint */
+  --shadow-card:    0 2px 8px rgba(31, 92, 65, 0.07);
+  --shadow-raised:  0 4px 14px rgba(31, 92, 65, 0.10);
+  --shadow-modal:   0 6px 20px rgba(31, 92, 65, 0.12);
+  --shadow-focus:   0 0 0 4px #E8F5EE;
+
+  /* Motion */
+  --duration-fast:  120ms;
+  --duration-base:  200ms;
+  --duration-enter: 300ms;
+  --duration-node:  400ms;
+  --ease-smooth:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Spacing — 8px base */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 }
 
 @theme inline {
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 10px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -60,11 +100,10 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
-  --font-sans: "Geist", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 8px;
+  --radius: 10px;
   --background: #FAF8F4;
   --foreground: #1C1A17;
   --surface: #F0EDE5;
@@ -98,16 +137,21 @@
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    box-sizing: border-box;
+    border-color: var(--color-chalk);
+  }
+
+  *, *::before, *::after {
+    --tw-shadow: none;
   }
 
   html, body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 14.5px;
-    line-height: 1.55;
+    font-size: 14px;
     font-weight: 400;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -115,19 +159,23 @@
     font-weight: 500;
   }
 
-  button, input, textarea, select {
-    transition: background-color 120ms ease, border-color 120ms ease,
-      color 120ms ease, opacity 120ms ease, transform 120ms ease;
+  /* Strip bold weights — design system never uses 600/700 */
+  .font-bold, .font-semibold {
+    font-weight: 500 !important;
   }
 
-  /* Strip shadows globally */
-  * {
-    box-shadow: none !important;
+  button, input, textarea, select, .card, [role="button"] {
+    transition: background-color var(--duration-base) var(--ease-smooth),
+      border-color var(--duration-base) var(--ease-smooth),
+      color var(--duration-base) var(--ease-smooth),
+      opacity var(--duration-base) var(--ease-smooth),
+      box-shadow var(--duration-base) var(--ease-smooth),
+      transform var(--duration-base) var(--ease-smooth);
   }
 
   /* React Flow theme overrides */
   .react-flow__background {
-    background-color: var(--color-background);
+    background-color: var(--color-parchment);
   }
   .react-flow__edge-path {
     stroke: var(--color-chalk);
@@ -139,19 +187,23 @@
     width: 6px;
     height: 6px;
   }
+  .react-flow__node {
+    transition: transform var(--duration-node) var(--ease-spring);
+  }
   .react-flow__controls {
-    background: var(--color-canvas);
+    background: #FFFFFF;
     border: 1px solid var(--color-chalk);
-    border-radius: 8px;
+    border-radius: 10px;
+    overflow: hidden;
   }
   .react-flow__controls-button {
-    background: var(--color-canvas);
+    background: #FFFFFF;
     border-bottom: 1px solid var(--color-chalk);
     color: var(--color-ink);
     fill: var(--color-ink);
   }
   .react-flow__controls-button:hover {
-    background: var(--color-parchment);
+    background: var(--color-canvas);
   }
   .react-flow__attribution {
     display: none;
