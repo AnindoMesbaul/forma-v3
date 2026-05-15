@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForma } from "@/lib/forma/store";
 import { getChildren } from "@/lib/forma/org";
+import { formatCost } from "@/lib/forma/org";
 import type { OrgNode } from "@/lib/forma/types";
 
 function EditableField({
@@ -113,6 +114,17 @@ export function NodeDetail({ node }: { node: OrgNode }) {
               </span>
             </div>
           )}
+          <div className="flex items-center justify-between py-1">
+            <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
+              Team cost
+            </span>
+            <span
+              className="text-[12px] tabular-nums text-foreground"
+              title="Total cost of this team (incl. reports)"
+            >
+              {formatCost(node.subtreeCost ?? 0)}
+            </span>
+          </div>
           <div className="flex items-center justify-between py-1">
             <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
               Span

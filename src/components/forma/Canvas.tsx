@@ -58,6 +58,7 @@ function CanvasInner() {
           title: n.title,
           department: n.department,
           span: n.span ?? 0,
+          subtreeCost: n.subtreeCost ?? 0,
           isAiTarget: aiTargetIds.has(n.id),
           isSelected: selectedNodeId === n.id,
           isFocused: focusedIds.has(n.id),
