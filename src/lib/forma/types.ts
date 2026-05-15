@@ -9,6 +9,7 @@ export interface OrgNode {
   salary?: number;
   span?: number;
   depth?: number;
+  subtreeCost?: number;
 }
 
 export type Op =
