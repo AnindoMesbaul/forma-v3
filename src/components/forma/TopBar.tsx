@@ -128,7 +128,7 @@ export function TopBar() {
 
 async function handleFileLoad(
   file: File,
-  loadCsv: ReturnType<typeof useForma>["loadCsv"],
+  loadCsv: (name: string, parsed: ReturnType<typeof parseOrgCsv>) => void,
 ) {
   const text = await file.text();
   const parsed = parseOrgCsv(text);
