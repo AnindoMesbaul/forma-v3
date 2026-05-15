@@ -45,14 +45,12 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
           {data.department || "—"}
         </span>
         <div className="flex items-center gap-2">
-          {data.subtreeCost > 0 && (
-            <span
-              className="text-[11px] tabular-nums text-foreground"
-              title="Total cost of this team (incl. reports)"
-            >
-              {formatCost(data.subtreeCost)}
-            </span>
-          )}
+          <span
+            className="text-[11px] tabular-nums text-foreground"
+            title="Total cost of this team (incl. reports)"
+          >
+            {data.subtreeCost > 0 ? formatCost(data.subtreeCost) : "—"}
+          </span>
           {data.span > 0 && (
             <span
               className={`text-[11px] tabular-nums ${
