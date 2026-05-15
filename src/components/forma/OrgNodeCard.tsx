@@ -1,11 +1,12 @@
 import { Handle, Position, type NodeProps } from "reactflow";
-import { isSpanViolation } from "@/lib/forma/org";
+import { isSpanViolation, formatCost } from "@/lib/forma/org";
 
 export interface OrgNodeData {
   name: string;
   title: string;
   department: string;
   span: number;
+  subtreeCost: number;
   isAiTarget: boolean;
   isSelected: boolean;
   isFocused: boolean;
