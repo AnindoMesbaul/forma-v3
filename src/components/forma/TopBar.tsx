@@ -56,10 +56,10 @@ export function TopBar() {
   };
 
   return (
-    <header className="flex h-12 shrink-0 items-center justify-between border-b border-border bg-surface px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-surface px-4 shadow-[var(--shadow-panel)]">
       <FormaLogo />
 
-      <div className="flex items-center gap-5 text-[12px]">
+      <div className="flex items-center gap-5 text-[13px]">
         {hasOrg && (
           <>
             <div className="flex items-baseline gap-1.5">
@@ -76,11 +76,11 @@ export function TopBar() {
               onMouseEnter={() => setCostsOpen(true)}
               onMouseLeave={() => setCostsOpen(false)}
             >
-              <button className="rounded-[6px] border border-border-strong bg-surface-2 px-2.5 py-1 font-medium text-foreground hover:bg-secondary">
+              <button className="min-h-8 rounded-[6px] border border-border-strong bg-surface-2 px-3 py-1.5 font-medium text-foreground hover:bg-secondary">
                 Costs
               </button>
               {costsOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 w-56 overflow-hidden rounded-[6px] border border-border bg-surface shadow-lg">
+                <div className="absolute right-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-[6px] border border-border bg-surface shadow-[var(--shadow-panel)]">
                   <div className="flex items-center justify-between border-b border-border bg-surface-2 px-3 py-2">
                     <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                       Total
@@ -93,7 +93,7 @@ export function TopBar() {
                     {sortedLayers.map(([layer, cost]) => (
                       <div
                         key={layer}
-                        className="flex items-center justify-between px-3 py-1.5"
+                        className="flex items-center justify-between px-3 py-2"
                       >
                         <span className="text-muted-foreground">Layer {layer}</span>
                         <span className="tabular-nums text-foreground">
@@ -102,7 +102,7 @@ export function TopBar() {
                       </div>
                     ))}
                     {sortedLayers.length === 0 && (
-                      <div className="px-3 py-1.5 text-muted-foreground">No salary data</div>
+                      <div className="px-3 py-2 text-muted-foreground">No salary data</div>
                     )}
                   </div>
                 </div>
@@ -113,7 +113,7 @@ export function TopBar() {
 
         <button
           onClick={() => inputRef.current?.click()}
-          className="rounded-[6px] border border-border-strong bg-surface-2 px-2.5 py-1 font-medium text-foreground hover:bg-secondary"
+          className="min-h-8 rounded-[6px] border border-border-strong bg-surface-2 px-3 py-1.5 font-medium text-foreground hover:bg-secondary"
         >
           Upload CSV
         </button>
