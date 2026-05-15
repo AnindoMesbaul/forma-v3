@@ -54,18 +54,7 @@ export function parseOrgCsv(text: string): OrgNode[] {
   const nodes: OrgNode[] = rows.map((r) => {
     const name = r.name.trim();
     const managerName = (r.manager ?? "").trim();
-    const salaryRaw = (
-      r.salary ??
-      r.compensation ??
-      r["base salary"] ??
-      r.base_salary ??
-      r.cost ??
-      r.pay ??
-      ""
-    )
-      .toString()
-      .replace(/[$,\s]/g, "")
-      .trim();
+    const salaryRaw = (r.salary ?? "").trim();
     return {
       id: nameToId.get(name)!,
       name,

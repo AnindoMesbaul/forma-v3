@@ -1,12 +1,11 @@
 import { Handle, Position, type NodeProps } from "reactflow";
-import { isSpanViolation, formatCost } from "@/lib/forma/org";
+import { isSpanViolation } from "@/lib/forma/org";
 
 export interface OrgNodeData {
   name: string;
   title: string;
   department: string;
   span: number;
-  subtreeCost: number;
   isAiTarget: boolean;
   isSelected: boolean;
   isFocused: boolean;
@@ -40,27 +39,19 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
           </div>
         </div>
       </div>
-      <div className="mt-1.5 flex items-center justify-between gap-2">
+      <div className="mt-1.5 flex items-center justify-between">
         <span className="rounded-[4px] bg-secondary px-1.5 py-px text-[10px] text-muted-foreground">
           {data.department || "—"}
         </span>
-        <div className="flex items-center gap-2">
+        {data.span > 0 && (
           <span
-            className="text-[11px] tabular-nums text-foreground"
-            title="Total cost of this team (incl. reports)"
+            className={`text-[11px] tabular-nums ${
+              violation ? "text-destructive" : "text-muted-foreground"
+            }`}
           >
-            {data.subtreeCost > 0 ? formatCost(data.subtreeCost) : "—"}
+            ↳ {data.span}
           </span>
-          {data.span > 0 && (
-            <span
-              className={`text-[11px] tabular-nums ${
-                violation ? "text-destructive" : "text-muted-foreground"
-              }`}
-            >
-              ↳ {data.span}
-            </span>
-          )}
-        </div>
+        )}
       </div>
       <Handle type="source" position={Position.Bottom} className="!bg-border-strong" />
     </div>

@@ -29,23 +29,7 @@ export function computeDerived(nodes: OrgNode[]): OrgNode[] {
     n.depth = d;
     for (const c of childrenIdx.get(id) ?? []) queue.push({ id: c, d: d + 1 });
   }
-  // subtreeCost via post-order DFS from roots
-  const computeCost = (id: string): number => {
-    const n = byId.get(id)!;
-    let sum = n.salary ?? 0;
-    for (const c of childrenIdx.get(id) ?? []) sum += computeCost(c);
-    n.subtreeCost = sum;
-    return sum;
-  };
-  for (const r of roots) computeCost(r.id);
   return [...byId.values()];
-}
-
-export function formatCost(n: number): string {
-  if (!n) return "$0";
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
-  return `$${n}`;
 }
 
 export function getChildren(nodes: OrgNode[], id: string): OrgNode[] {

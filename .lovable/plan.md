@@ -1,35 +1,39 @@
 ## Goal
 
-Show each node's **cumulative cost** — the sum of its own salary plus all descendants' salaries — on the org node card and in the node detail panel.
+Make proposal cards clickable. When clicked, the canvas zooms into and highlights the affected nodes.
 
 ## Changes
 
-**1. `src/lib/forma/types.ts`**
-- Add `subtreeCost?: number` to `OrgNode` (computed, like `span` and `depth`).
+**1. `src/lib/forma/store.ts`**
+- Add `focusedProposalId: string | null` and `focusProposal(id: string | null)` action.
+- Clear `focusedProposalId` automatically when proposals change or canvas pane is clicked.
 
-**2. `src/lib/forma/org.ts`**
-- In `computeDerived`, after building the children index, do a post-order traversal from roots to compute `subtreeCost = (salary ?? 0) + sum(children.subtreeCost)` for each node.
-- Add a small `formatCost(n: number)` helper (e.g. `$1.2M`, `$340K`, `$0`) — used by UI.
+**2. `src/components/forma/ProposalCard.tsx`**
+- Wrap card body in a clickable region (button/div with `onClick`) that calls `focusProposal(proposal.id)`.
+- Stop propagation on Accept/Reject/Modify buttons and the modify textarea so they don't re-trigger focus.
+- Add a "focused" visual state (primary border + subtle ring) when `focusedProposalId === proposal.id`.
+- Add hover affordance (cursor-pointer, hover bg).
 
-**3. `src/components/forma/OrgNodeCard.tsx`**
-- Add `subtreeCost: number` to `OrgNodeData`.
-- Render the cumulative cost in the card footer row, alongside the existing department chip and span. Format compactly (`$1.2M`).
-- Tooltip/aria-label clarifies "Total cost of this team (incl. reports)".
+**3. `src/components/forma/Canvas.tsx`**
+- Read `focusedProposalId` and `proposals` from the store.
+- When `focusedProposalId` changes, compute the set of affected node IDs from that proposal and call `reactFlowInstance.fitView({ nodes: [...], padding: 0.4, duration: 600 })` to smoothly zoom in.
+- Pass a new `isFocused` flag to nodes whose IDs are in the focused proposal's `affectedNodeIds`, in addition to the existing `isAiTarget`.
+- Clear focus on `onPaneClick`.
 
-**4. `src/components/forma/Canvas.tsx`**
-- Pass `subtreeCost: n.subtreeCost ?? 0` into the node data mapping.
+**4. `src/components/forma/OrgNodeCard.tsx`**
+- Accept `isFocused` in `OrgNodeData`.
+- When `isFocused`, render a stronger highlight: thicker primary border + ring/glow (using existing tokens, e.g. `ring-2 ring-primary`), overriding the default border.
+- Non-focused nodes during a focus session get a slightly dimmed look (e.g. `opacity-60`) so the focused subset stands out. Only apply dimming when *some* proposal is focused.
 
-**5. `src/components/forma/NodeDetail.tsx`**
-- Add a read-only row "Team cost" showing `formatCost(node.subtreeCost)` right under the existing "Salary" row, so the user sees both individual salary and cumulative subtree cost.
+## Behavior details
 
-## Behavior
-
-- Updates automatically on every reparent / accept proposal / CSV reload, since `computeDerived` is already called by `applyOps` and `loadCsv`.
-- Nodes without any salary data anywhere in the subtree show `$0` (or we can hide it if `subtreeCost === 0` to avoid noise — will hide).
-- No changes to AI prompt, proposals, or layout dimensions.
+- Clicking a different proposal re-focuses and re-zooms.
+- Clicking the focused proposal again (or clicking the canvas background) clears focus and restores full opacity. No auto fitView-out — user can use existing controls.
+- Accept/Reject of the focused proposal clears focus.
+- Affected nodes: use `proposal.affectedNodeIds` (already on the type and already used to mark `isAiTarget`).
 
 ## Out of scope
 
-- No per-level aggregate panel or chart.
-- No currency selector or locale formatting beyond compact USD.
-- No editing of cost (still derived from `salary`).
+- No new data on proposals.
+- No keyboard navigation between proposals.
+- No animation beyond the built-in `fitView` duration.
