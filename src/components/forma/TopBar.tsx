@@ -12,23 +12,23 @@ function formatCurrency(n: number): string {
 
 function FormaLogo() {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 text-white">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M12 2L3 7v10l9 5 9-5V7l-9-5z"
-          stroke="hsl(var(--primary))"
+          stroke="#B0DEC9"
           strokeWidth="1.8"
           strokeLinejoin="round"
-          fill="hsl(var(--primary) / 0.12)"
+          fill="rgba(176, 222, 201, 0.15)"
         />
         <path
           d="M12 2v20M3 7l9 5 9-5"
-          stroke="hsl(var(--primary))"
+          stroke="#B0DEC9"
           strokeWidth="1.8"
           strokeLinejoin="round"
         />
       </svg>
-      <span className="font-semibold tracking-tight">FORMA</span>
+      <span className="font-medium tracking-tight">FORMA</span>
     </div>
   );
 }
@@ -55,20 +55,23 @@ export function TopBar() {
     runAnalysis();
   };
 
+  const navBtn =
+    "min-h-8 rounded-[8px] border border-white/20 bg-transparent px-3 py-1.5 font-medium text-white hover:bg-sage-core";
+
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-surface px-4 shadow-[var(--shadow-panel)]">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-chalk bg-sage-deep px-4 text-white">
       <FormaLogo />
 
       <div className="flex items-center gap-5 text-[13px]">
         {hasOrg && (
           <>
             <div className="flex items-baseline gap-1.5">
-              <span className="font-medium tabular-nums text-foreground">{stats.headcount}</span>
-              <span className="text-muted-foreground">headcount</span>
+              <span className="font-medium tabular-nums text-white">{stats.headcount}</span>
+              <span className="text-white/70">headcount</span>
             </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="font-medium tabular-nums text-foreground">{stats.layers}</span>
-              <span className="text-muted-foreground">layers</span>
+              <span className="font-medium tabular-nums text-white">{stats.layers}</span>
+              <span className="text-white/70">layers</span>
             </div>
 
             <div
@@ -76,16 +79,14 @@ export function TopBar() {
               onMouseEnter={() => setCostsOpen(true)}
               onMouseLeave={() => setCostsOpen(false)}
             >
-              <button className="min-h-8 rounded-[6px] border border-border-strong bg-surface-2 px-3 py-1.5 font-medium text-foreground hover:bg-secondary">
-                Costs
-              </button>
+              <button className={navBtn}>Costs</button>
               {costsOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-[6px] border border-border bg-surface shadow-[var(--shadow-panel)]">
-                  <div className="flex items-center justify-between border-b border-border bg-surface-2 px-3 py-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="absolute right-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-[8px] border border-chalk bg-canvas text-ink">
+                  <div className="flex items-center justify-between border-b border-chalk bg-parchment px-3 py-2">
+                    <span className="text-[11px] font-medium uppercase tracking-wide text-slate">
                       Total
                     </span>
-                    <span className="font-medium tabular-nums text-foreground">
+                    <span className="font-medium tabular-nums text-ink">
                       {formatCurrency(totalCost)}
                     </span>
                   </div>
@@ -95,14 +96,14 @@ export function TopBar() {
                         key={layer}
                         className="flex items-center justify-between px-3 py-2"
                       >
-                        <span className="text-muted-foreground">Layer {layer}</span>
-                        <span className="tabular-nums text-foreground">
+                        <span className="text-slate">Layer {layer}</span>
+                        <span className="tabular-nums text-ink">
                           {formatCurrency(cost)}
                         </span>
                       </div>
                     ))}
                     {sortedLayers.length === 0 && (
-                      <div className="px-3 py-2 text-muted-foreground">No salary data</div>
+                      <div className="px-3 py-2 text-slate">No salary data</div>
                     )}
                   </div>
                 </div>
@@ -111,10 +112,7 @@ export function TopBar() {
           </>
         )}
 
-        <button
-          onClick={() => inputRef.current?.click()}
-          className="min-h-8 rounded-[6px] border border-border-strong bg-surface-2 px-3 py-1.5 font-medium text-foreground hover:bg-secondary"
-        >
+        <button onClick={() => inputRef.current?.click()} className={navBtn}>
           Upload CSV
         </button>
         <input
