@@ -10,7 +10,7 @@ export function AgentPanel() {
   const [tab, setTab] = useState<Tab>("proposals");
 
   return (
-    <aside className="flex h-full w-[344px] shrink-0 flex-col border-r border-border bg-surface shadow-[var(--shadow-panel)]">
+    <aside className="flex h-full w-[344px] shrink-0 flex-col border-r border-chalk bg-canvas">
       {aiThinking && (
         <div className="flex h-9 shrink-0 items-center justify-end border-b border-border px-3">
           <span className="flex items-center gap-1 text-xs text-primary">
