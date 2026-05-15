@@ -47,38 +47,32 @@
 
 :root {
   --radius: 6px;
-  /* #0A0A0A */
-  --background: oklch(0.145 0 0);
-  /* #EDEDED */
-  --foreground: oklch(0.937 0 0);
-  /* #111111 */
-  --surface: oklch(0.18 0 0);
-  --surface-2: oklch(0.21 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.937 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.937 0 0);
-  /* #5E6AD2 */
-  --primary: oklch(0.55 0.16 275);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.937 0 0);
-  --muted: oklch(0.22 0 0);
-  /* #6B6B6B */
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.55 0.16 275);
-  --accent-foreground: oklch(0.98 0 0);
-  /* #E5484D */
-  --destructive: oklch(0.62 0.21 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  /* #30A46C */
-  --success: oklch(0.62 0.14 155);
-  --success-foreground: oklch(0.98 0 0);
-  /* #1F1F1F */
-  --border: oklch(0.245 0 0);
-  --border-strong: oklch(0.32 0 0);
-  --input: oklch(0.245 0 0);
-  --ring: oklch(0.55 0.16 275);
+  --background: oklch(0.19 0 0);
+  --foreground: oklch(0.97 0 0);
+  --surface: oklch(0.235 0 0);
+  --surface-2: oklch(0.275 0 0);
+  --card: oklch(0.235 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.235 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.62 0.16 275);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.28 0 0);
+  --muted-foreground: oklch(0.66 0 0);
+  --accent: oklch(0.62 0.16 275);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.66 0.21 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.66 0.14 155);
+  --success-foreground: oklch(0.99 0 0);
+  --border: oklch(0.32 0 0);
+  --border-strong: oklch(0.42 0 0);
+  --input: oklch(0.32 0 0);
+  --ring: oklch(0.62 0.16 275);
+  --shadow-panel: 0 1px 0 0 color-mix(in oklab, white 4%, transparent),
+                  0 8px 24px -12px rgba(0, 0, 0, 0.5);
 }
 
 .dark {
@@ -94,8 +88,8 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.45;
+    font-size: 14.5px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "cv11", "ss01";
   }
