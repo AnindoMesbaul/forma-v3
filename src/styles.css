@@ -1,23 +1,41 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Forma — Linear-inspired dark design system.
- * All semantic tokens defined in oklch. Do not hardcode colors in components.
+ * Forma — sage / parchment design system.
+ * Flat surfaces, no shadows, no gradients.
  */
 
+@theme {
+  --color-sage-deep:       #1F5C41;
+  --color-sage-core:       #3A9268;
+  --color-sage-light:      #B0DEC9;
+  --color-amber-accent:    #C8860F;
+  --color-amber-glow:      #F5E6C3;
+  --color-parchment:       #FAF8F4;
+  --color-canvas:          #F0EDE5;
+  --color-chalk:           #D4CFC5;
+  --color-slate:           #7A756A;
+  --color-ink:             #1C1A17;
+  --color-healthy:         #1A5C38;
+  --color-healthy-bg:      #E8F5EE;
+  --color-borderline:      #A06500;
+  --color-borderline-bg:   #FFF6E0;
+  --color-violation:       #8B2F26;
+  --color-violation-bg:    #FFF0EE;
+  --color-ai:              #3D3A9E;
+  --color-ai-bg:           #EEF0FF;
+}
+
 @theme inline {
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
-  --radius-2xl: 10px;
-  --radius-3xl: 12px;
-  --radius-4xl: 14px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -42,41 +60,40 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 6px;
-  --background: oklch(0.19 0 0);
-  --foreground: oklch(0.97 0 0);
-  --surface: oklch(0.235 0 0);
-  --surface-2: oklch(0.275 0 0);
-  --card: oklch(0.235 0 0);
-  --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.235 0 0);
-  --popover-foreground: oklch(0.97 0 0);
-  --primary: oklch(0.62 0.16 275);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.28 0 0);
-  --secondary-foreground: oklch(0.97 0 0);
-  --muted: oklch(0.28 0 0);
-  --muted-foreground: oklch(0.66 0 0);
-  --accent: oklch(0.62 0.16 275);
-  --accent-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.66 0.21 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.66 0.14 155);
-  --success-foreground: oklch(0.99 0 0);
-  --border: oklch(0.32 0 0);
-  --border-strong: oklch(0.42 0 0);
-  --input: oklch(0.32 0 0);
-  --ring: oklch(0.62 0.16 275);
-  --shadow-panel: 0 1px 0 0 color-mix(in oklab, white 4%, transparent),
-                  0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --radius: 8px;
+  --background: #FAF8F4;
+  --foreground: #1C1A17;
+  --surface: #F0EDE5;
+  --surface-2: #F0EDE5;
+  --card: #FFFFFF;
+  --card-foreground: #1C1A17;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1A17;
+  --primary: #1F5C41;
+  --primary-foreground: #FFFFFF;
+  --secondary: #B0DEC9;
+  --secondary-foreground: #1C1A17;
+  --muted: #F0EDE5;
+  --muted-foreground: #7A756A;
+  --accent: #C8860F;
+  --accent-foreground: #FFFFFF;
+  --destructive: #8B2F26;
+  --destructive-foreground: #FFFFFF;
+  --success: #1A5C38;
+  --success-foreground: #FFFFFF;
+  --border: #D4CFC5;
+  --border-strong: #D4CFC5;
+  --input: #D4CFC5;
+  --ring: #3A9268;
+  --shadow-panel: none;
 }
 
 .dark {
-  /* same — app is always dark */
+  /* app is single-theme */
 }
 
 @layer base {
@@ -90,8 +107,12 @@
     font-family: var(--font-sans);
     font-size: 14.5px;
     line-height: 1.55;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
   }
 
   button, input, textarea, select {
@@ -99,34 +120,38 @@
       color 120ms ease, opacity 120ms ease, transform 120ms ease;
   }
 
+  /* Strip shadows globally */
+  * {
+    box-shadow: none !important;
+  }
+
   /* React Flow theme overrides */
   .react-flow__background {
     background-color: var(--color-background);
   }
   .react-flow__edge-path {
-    stroke: var(--color-border-strong);
+    stroke: var(--color-chalk);
     stroke-width: 1.25;
   }
   .react-flow__handle {
-    background: var(--color-border-strong);
+    background: var(--color-chalk);
     border: none;
     width: 6px;
     height: 6px;
   }
   .react-flow__controls {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    box-shadow: none;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-chalk);
+    border-radius: 8px;
   }
   .react-flow__controls-button {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-foreground);
-    fill: var(--color-foreground);
+    background: var(--color-canvas);
+    border-bottom: 1px solid var(--color-chalk);
+    color: var(--color-ink);
+    fill: var(--color-ink);
   }
   .react-flow__controls-button:hover {
-    background: var(--color-surface-2);
+    background: var(--color-parchment);
   }
   .react-flow__attribution {
     display: none;

@@ -15,45 +15,47 @@ export interface OrgNodeData {
 export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
   const violation = isSpanViolation(data.span);
   const borderClass = data.isFocused
-    ? "border-primary ring-2 ring-primary"
+    ? "border-ai ring-1 ring-ai"
     : data.isAiTarget
-      ? "border-primary"
+      ? "border-ai"
       : data.isSelected
-        ? "border-border-strong"
-        : "border-border";
+        ? "border-sage-core"
+        : "border-chalk";
 
   return (
     <div
-      className={`relative w-[240px] rounded-[6px] border bg-surface px-3.5 py-2.5 shadow-[var(--shadow-panel)] transition-opacity ${borderClass} ${
+      className={`relative w-[240px] rounded-[10px] border bg-white px-3.5 py-2.5 transition-opacity ${borderClass} ${
         data.isDimmed ? "opacity-40" : "opacity-100"
       }`}
     >
-      <Handle type="target" position={Position.Top} className="!bg-border-strong" />
+      <Handle type="target" position={Position.Top} className="!bg-chalk" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[14px] font-medium text-foreground">
+          <div className="truncate text-[13px] font-medium text-ink">
             {data.name}
           </div>
-          <div className="truncate text-[13px] text-muted-foreground">
+          <div className="truncate text-[11px] text-slate">
             {data.title}
           </div>
         </div>
       </div>
       <div className="mt-2 flex items-center justify-between">
-        <span className="rounded-[4px] bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
+        <span className="rounded-[6px] border border-chalk bg-parchment px-1.5 py-0.5 text-[11px] text-slate">
           {data.department || "—"}
         </span>
         {data.span > 0 && (
           <span
-            className={`text-[12px] tabular-nums ${
-              violation ? "text-destructive" : "text-muted-foreground"
+            className={`rounded-[6px] px-1.5 py-0.5 text-[11px] font-medium tabular-nums ${
+              violation
+                ? "bg-violation-bg text-violation"
+                : "bg-amber-glow text-amber-accent"
             }`}
           >
             ↳ {data.span}
           </span>
         )}
       </div>
-      <Handle type="source" position={Position.Bottom} className="!bg-border-strong" />
+      <Handle type="source" position={Position.Bottom} className="!bg-chalk" />
     </div>
   );
 }
