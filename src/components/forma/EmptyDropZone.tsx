@@ -35,7 +35,7 @@ export function EmptyDropZone() {
         }`}
       >
         <h1 className="font-display text-[28px] font-light leading-tight text-ink">
-          Drop your org CSV here or click to upload
+          Upload your org CSV here
         </h1>
         <p className="mt-2 text-muted-foreground">
           Required columns: name, manager, title, department
