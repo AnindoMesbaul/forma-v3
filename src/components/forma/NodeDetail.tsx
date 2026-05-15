@@ -61,22 +61,22 @@ export function NodeDetail({ node }: { node: OrgNode }) {
   const reports = getChildren(nodes, node.id);
 
   return (
-    <aside className="flex h-full w-[304px] shrink-0 flex-col border-l border-border bg-surface shadow-[var(--shadow-panel)]">
-      <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+    <aside className="flex h-full w-[304px] shrink-0 flex-col border-l border-chalk bg-canvas">
+      <div className="flex h-10 shrink-0 items-center justify-between border-b border-chalk px-3">
+        <span className="text-[11px] font-medium uppercase tracking-[0.05em] text-slate">
           Node
         </span>
         <button
           onClick={() => selectNode(null)}
-          className="text-base text-muted-foreground hover:text-foreground"
+          className="text-base text-slate hover:text-ink"
         >
           ×
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3">
-        <h2 className="text-base font-semibold text-foreground">{node.name}</h2>
-        <p className="text-sm text-muted-foreground">{node.title}</p>
+        <h2 className="font-display text-[20px] font-light leading-tight text-ink">{node.name}</h2>
+        <p className="text-sm text-slate">{node.title}</p>
 
         <div className="mt-3 flex flex-col divide-y divide-border border-y border-border">
           <EditableField
