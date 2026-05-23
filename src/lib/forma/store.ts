@@ -5,6 +5,9 @@ import type {
   OrgNode,
   Op,
   Proposal,
+  AppPhase,
+  EmployeeRecord,
+  UploadedFile,
 } from "./types";
 import { applyOps, computeDerived, opsSignature } from "./org";
 
@@ -34,6 +37,17 @@ interface FormaState {
   setThinking: (v: boolean) => void;
   prefillChat: string | null;
   setPrefill: (s: string | null) => void;
+
+  appPhase: AppPhase;
+  uploadedFiles: UploadedFile[];
+  employeeRecords: EmployeeRecord[];
+  builderThinking: boolean;
+  setAppPhase: (phase: AppPhase) => void;
+  setUploadedFiles: (files: UploadedFile[]) => void;
+  setEmployeeRecords: (records: EmployeeRecord[]) => void;
+  setBuilderThinking: (v: boolean) => void;
+  updateEmployeeRecord: (id: string, patch: Partial<EmployeeRecord>) => void;
+  resetAll: () => void;
 }
 
 export const useForma = create<FormaState>((set, get) => ({
@@ -48,6 +62,35 @@ export const useForma = create<FormaState>((set, get) => ({
   aiThinking: false,
   prefillChat: null,
 
+  appPhase: "upload",
+  uploadedFiles: [],
+  employeeRecords: [],
+  builderThinking: false,
+  setAppPhase: (phase) => set({ appPhase: phase }),
+  setUploadedFiles: (files) => set({ uploadedFiles: files }),
+  setEmployeeRecords: (records) => set({ employeeRecords: records }),
+  setBuilderThinking: (v) => set({ builderThinking: v }),
+  updateEmployeeRecord: (id, patch) =>
+    set({
+      employeeRecords: get().employeeRecords.map((r) =>
+        r.id === id ? { ...r, ...patch } : r,
+      ),
+    }),
+  resetAll: () =>
+    set({
+      appPhase: "upload",
+      uploadedFiles: [],
+      employeeRecords: [],
+      nodes: [],
+      proposals: [],
+      changeLog: [],
+      rejectedSignatures: [],
+      selectedNodeId: null,
+      focusedProposalId: null,
+      chat: [],
+      fileName: null,
+    }),
+
   focusProposal: (id) => set({ focusedProposalId: id }),
 
   loadCsv: (fileName, nodes) =>
@@ -59,6 +102,7 @@ export const useForma = create<FormaState>((set, get) => ({
       rejectedSignatures: [],
       selectedNodeId: null,
       chat: [],
+      appPhase: "canvas",
     }),
 
   selectNode: (id) => set({ selectedNodeId: id }),
