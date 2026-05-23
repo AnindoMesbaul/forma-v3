@@ -218,7 +218,7 @@ export function MultiUploadZone() {
               onClick={runBuilder}
               className="w-full rounded-[10px] bg-amber-accent px-4 py-3 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Analyse with Builder Agent
+              Build
             </button>
           )}
         </div>
