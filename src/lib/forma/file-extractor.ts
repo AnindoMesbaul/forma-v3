@@ -16,12 +16,17 @@ export async function extractTextFromFile(file: File): Promise<string> {
     }
     if (name.endsWith(".pdf")) {
       const pdfjs: any = await import("pdfjs-dist");
-      // Disable worker to avoid worker URL setup in browser bundles.
+      // Configure pdfjs worker via Vite ?url import.
       try {
-        pdfjs.GlobalWorkerOptions.workerSrc = "";
-      } catch {}
+        const workerUrl = (
+          await import("pdfjs-dist/build/pdf.worker.min.mjs?url")
+        ).default;
+        pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+      } catch (err) {
+        console.error("Failed to load pdfjs worker", err);
+      }
       const buf = await file.arrayBuffer();
-      const doc = await pdfjs.getDocument({ data: buf, disableWorker: true }).promise;
+      const doc = await pdfjs.getDocument({ data: buf }).promise;
       const out: string[] = [];
       for (let i = 1; i <= doc.numPages; i++) {
         const page = await doc.getPage(i);

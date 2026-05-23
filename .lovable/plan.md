@@ -1,52 +1,30 @@
-# Improve readability while keeping it sleek
+## Problem
 
-The app uses a near-black background (`oklch(0.145)`), 13px base font, dim muted text (`oklch(0.5)`), and 11–12px UI elements. Result: hard to read, cramped controls. This plan tunes the design tokens and a few component sizings — no functional changes.
+PDF uploads fail silently — files show as "Error" in the upload list. Root cause is in `src/lib/forma/file-extractor.ts`:
 
-## 1. Lighten and warm the dark palette (`src/styles.css`)
-
-- `--background`: `0.145` → `0.19` (softer slate, less harsh)
-- `--surface`: `0.18` → `0.235` (panels distinct from bg)
-- `--surface-2`: `0.21` → `0.275`
-- `--foreground`: `0.937` → `0.97` (crisper primary text)
-- `--muted-foreground`: `0.5` → `0.66` (meets WCAG AA on new bg)
-- `--border`: `0.245` → `0.32`
-- `--border-strong`: `0.32` → `0.42`
-- `--primary`: lightness `0.55` → `0.62` so it pops against lighter bg
-
-Stays dark-only.
-
-## 2. Bigger base typography
-
-In `html, body`:
-- font size `13px` → `14.5px`
-- line height `1.45` → `1.55`
-
-Then sweep small text:
-- `TopBar`: `h-12` → `h-14`, stats `text-[12px]` → `text-[13px]`, buttons `px-2.5 py-1` → `px-3 py-1.5`
-- `OrgNodeCard`: width `220 → 240`, name `13 → 14px`, title `12 → 13px`, dept badge `10 → 11px`, padding `px-3 py-2` → `px-3.5 py-2.5`
-- `ProposalCard`, `ChangeLog`, `NodeDetail`, `AgentPanel`, `ChatBar`: replace any `text-[11px]/[12px]` with `text-xs`/`text-sm`; section headers `text-sm font-medium`
-
-## 3. Larger interactive targets
-
-- Buttons get `min-h-8`
-- Costs dropdown: `py-1.5 → py-2`, width `w-56 → w-64`
-- Widen `AgentPanel` and `NodeDetail` by ~24px for breathing room (verify current width during implementation)
-
-## 4. Subtle elevation so panels read as layers
-
-Add to `styles.css`:
+```ts
+pdfjs.GlobalWorkerOptions.workerSrc = "";
+const doc = await pdfjs.getDocument({ data: buf, disableWorker: true }).promise;
 ```
---shadow-panel: 0 1px 0 0 color-mix(in oklab, white 4%, transparent),
-                0 8px 24px -12px rgba(0,0,0,0.5);
+
+`pdfjs-dist` v4 requires a real worker. Both `workerSrc = ""` and `disableWorker: true` are unsupported, so `getDocument` throws and the surrounding `try/catch` returns `""` — which `MultiUploadZone` treats as extraction failure.
+
+## Fix
+
+Update `src/lib/forma/file-extractor.ts`'s PDF branch to load the worker via Vite's `?url` import (works in the browser bundle, no manual hosting needed):
+
+```ts
+const pdfjs: any = await import("pdfjs-dist");
+const workerUrl = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
+pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+const buf = await file.arrayBuffer();
+const doc = await pdfjs.getDocument({ data: buf }).promise;
 ```
-Apply on `TopBar`, `AgentPanel`, `NodeDetail`, costs dropdown via `shadow-[var(--shadow-panel)]`. Keeps the flat Linear vibe without the everything-is-one-black-slab feel.
 
-## What stays the same
+Also improve error visibility: surface the underlying error message on the uploaded file row (or at minimum keep the `console.error` and confirm the existing "Error" badge renders) so future failures aren't silent.
 
-Component logic, store, AI runner, routing, shadcn primitives, 6px radius, tabular-nums for numbers — all untouched.
+## Scope
 
-## Out of scope (ask if wanted)
-
-- Light theme toggle
-- Restyling React Flow edges/handles beyond node size
-- New icon set / logo redesign
+- Edit only `src/lib/forma/file-extractor.ts` (PDF branch).
+- No changes to upload UI, store, or other extractors.
+- Verify by uploading a PDF and confirming text is extracted and status flips to "Ready".
