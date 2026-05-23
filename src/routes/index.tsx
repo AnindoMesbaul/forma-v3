@@ -5,6 +5,8 @@ import { Canvas } from "@/components/forma/Canvas";
 import { NodeDetail } from "@/components/forma/NodeDetail";
 import { ChatBar } from "@/components/forma/ChatBar";
 import { EmptyDropZone } from "@/components/forma/EmptyDropZone";
+import { MultiUploadZone } from "@/components/forma/MultiUploadZone";
+import { DataReviewTable } from "@/components/forma/DataReviewTable";
 import { useForma } from "@/lib/forma/store";
 
 export const Route = createFileRoute("/")({
@@ -22,8 +24,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { nodes, selectedNodeId } = useForma();
+  const { nodes, selectedNodeId, appPhase } = useForma();
   const selected = nodes.find((n) => n.id === selectedNodeId) ?? null;
+
+  if (appPhase === "upload" || appPhase === "processing") {
+    return (
+      <div className="flex h-screen w-screen flex-col overflow-hidden">
+        <TopBar />
+        <main className="relative flex-1 overflow-hidden">
+          <MultiUploadZone />
+        </main>
+      </div>
+    );
+  }
+
+  if (appPhase === "reviewing") {
+    return <DataReviewTable />;
+  }
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-background text-foreground">
