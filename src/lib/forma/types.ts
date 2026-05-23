@@ -42,3 +42,26 @@ export interface ChatMessage {
   content: string;
   ts: number;
 }
+
+export type AppPhase = "upload" | "processing" | "reviewing" | "canvas";
+
+export interface EmployeeRecord {
+  id: string;
+  name: string;
+  title: string;
+  seniority: string;
+  compensation?: number;
+  manager?: string;
+  department?: string;
+  notes: string;
+  source: string;
+  confidence: "high" | "medium" | "low";
+}
+
+export interface UploadedFile {
+  id: string;
+  name: string;
+  type: string;
+  extractedText: string;
+  status: "pending" | "extracting" | "ready" | "error";
+}

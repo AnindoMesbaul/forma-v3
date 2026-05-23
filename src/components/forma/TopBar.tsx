@@ -35,7 +35,7 @@ function FormaLogo() {
 
 export function TopBar() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { nodes, loadCsv } = useForma();
+  const { nodes, loadCsv, appPhase, resetAll } = useForma();
   const [costsOpen, setCostsOpen] = useState(false);
   const stats = computeStats(nodes);
   const hasOrg = nodes.length > 0;
@@ -55,7 +55,17 @@ export function TopBar() {
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-sage-deep bg-sage-deep px-5 text-white">
-      <FormaLogo />
+      <div className="flex items-center gap-3">
+        {appPhase !== "upload" && (
+          <button
+            onClick={resetAll}
+            className="rounded-[8px] border border-white/25 px-2.5 py-1 text-[12px] text-white/85 transition-colors hover:bg-sage-core hover:border-sage-core"
+          >
+            ← Start over
+          </button>
+        )}
+        <FormaLogo />
+      </div>
 
       <div className="flex items-center gap-5 text-[13px]">
         {hasOrg && (
