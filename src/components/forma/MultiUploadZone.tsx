@@ -116,8 +116,7 @@ export function MultiUploadZone() {
             Design your enterprise
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Drop in your HR files, spreadsheets, salary data, org charts —
-            anything you have.
+            Drop in your HR files, salary data, org charts etc.
           </p>
         </div>
 
