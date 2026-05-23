@@ -113,7 +113,7 @@ export function MultiUploadZone() {
       <div className="w-full max-w-[640px]">
         <div className="mb-6 text-center">
           <h1 className="font-display text-[32px] font-light leading-tight text-ink">
-            Build your org from any data
+            Design your enterprise
           </h1>
           <p className="mt-2 text-muted-foreground">
             Drop in your HR files, spreadsheets, salary data, org charts —
