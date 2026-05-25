@@ -98,6 +98,8 @@ export const useForma = create<FormaState>((set, get) => ({
   activeScenarioId: "",
 
   appPhase: "upload",
+  comparisonMode: false,
+  setComparisonMode: (v) => set({ comparisonMode: v }),
   uploadedFiles: [],
   employeeRecords: [],
   builderThinking: false,
@@ -126,6 +128,7 @@ export const useForma = create<FormaState>((set, get) => ({
       fileName: null,
       scenarios: [],
       activeScenarioId: "",
+      comparisonMode: false,
     }),
 
   focusProposal: (id) => set({ focusedProposalId: id }),
@@ -146,6 +149,7 @@ export const useForma = create<FormaState>((set, get) => ({
       activeScenarioId: base.id,
       selectedNodeId: null,
       appPhase: "canvas",
+      comparisonMode: false,
       ...mirror([base], base.id),
     });
   },
