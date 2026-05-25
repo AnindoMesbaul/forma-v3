@@ -45,6 +45,16 @@ export interface ChatMessage {
 
 export type AppPhase = "upload" | "processing" | "reviewing" | "canvas";
 
+export interface Scenario {
+  id: string;
+  name: string;
+  nodes: OrgNode[];
+  proposals: Proposal[];
+  changeLog: ChangeLogEntry[];
+  rejectedSignatures: string[];
+  chat: ChatMessage[];
+}
+
 export interface EmployeeRecord {
   id: string;
   name: string;

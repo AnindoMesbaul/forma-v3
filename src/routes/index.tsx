@@ -7,6 +7,7 @@ import { ChatBar } from "@/components/forma/ChatBar";
 import { EmptyDropZone } from "@/components/forma/EmptyDropZone";
 import { MultiUploadZone } from "@/components/forma/MultiUploadZone";
 import { DataReviewTable } from "@/components/forma/DataReviewTable";
+import { ScenarioTabBar } from "@/components/forma/ScenarioTabBar";
 import { useForma } from "@/lib/forma/store";
 
 export const Route = createFileRoute("/")({
@@ -45,6 +46,7 @@ function Index() {
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-background text-foreground">
       <TopBar />
+      <ScenarioTabBar />
       <div className="flex min-h-0 flex-1">
         <AgentPanel />
         <div className="flex min-w-0 flex-1 flex-col">
