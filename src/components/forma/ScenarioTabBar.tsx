@@ -10,6 +10,8 @@ export function ScenarioTabBar() {
     createScenario,
     renameScenario,
     deleteScenario,
+    comparisonMode,
+    setComparisonMode,
   } = useForma();
 
   if (appPhase !== "canvas" || scenarios.length === 0) return null;
@@ -38,6 +40,19 @@ export function ScenarioTabBar() {
       >
         + New scenario
       </button>
+      {scenarios.length >= 2 && (
+        <button
+          type="button"
+          onClick={() => setComparisonMode(!comparisonMode)}
+          className={`ml-auto mr-1 flex items-center gap-1.5 rounded-[6px] border px-3 py-1 text-[13px] font-medium transition-colors ${
+            comparisonMode
+              ? "border-primary bg-primary text-white"
+              : "border-chalk bg-white text-ink hover:border-primary hover:text-primary"
+          }`}
+        >
+          {comparisonMode ? "← Back to canvas" : "Compare scenarios"}
+        </button>
+      )}
     </div>
   );
 }
