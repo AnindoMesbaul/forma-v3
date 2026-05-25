@@ -1,8 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForma } from "@/lib/forma/store";
-import { parseOrgCsv } from "@/lib/forma/csv";
 import { computeStats } from "@/lib/forma/org";
-import { runAnalysis } from "./ai-runner";
 
 function formatCurrency(n: number): string {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -34,8 +32,7 @@ function FormaLogo() {
 }
 
 export function TopBar() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { nodes, loadCsv, appPhase, resetAll } = useForma();
+  const { nodes, appPhase, resetAll } = useForma();
   const [costsOpen, setCostsOpen] = useState(false);
   const stats = computeStats(nodes);
   const hasOrg = nodes.length > 0;
@@ -50,8 +47,6 @@ export function TopBar() {
 
   const navBtn =
     "rounded-[10px] border border-white/25 bg-transparent px-[18px] py-[9px] text-[13px] font-medium text-white transition-colors hover:bg-sage-core hover:border-sage-core";
-  const ctaBtn =
-    "rounded-[10px] border border-amber-accent bg-amber-accent px-[18px] py-[9px] text-[13px] font-medium text-white transition-opacity hover:opacity-90";
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-sage-deep bg-sage-deep px-5 text-white">
@@ -120,14 +115,4 @@ export function TopBar() {
       </div>
     </header>
   );
-}
-
-async function handleFileLoad(
-  file: File,
-  loadCsv: (name: string, parsed: ReturnType<typeof parseOrgCsv>) => void,
-) {
-  const text = await file.text();
-  const parsed = parseOrgCsv(text);
-  loadCsv(file.name, parsed);
-  runAnalysis();
 }
