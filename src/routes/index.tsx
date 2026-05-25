@@ -8,6 +8,7 @@ import { EmptyDropZone } from "@/components/forma/EmptyDropZone";
 import { MultiUploadZone } from "@/components/forma/MultiUploadZone";
 import { DataReviewTable } from "@/components/forma/DataReviewTable";
 import { ScenarioTabBar } from "@/components/forma/ScenarioTabBar";
+import { ScenarioCompare } from "@/components/forma/ScenarioCompare";
 import { useForma } from "@/lib/forma/store";
 
 export const Route = createFileRoute("/")({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { nodes, selectedNodeId, appPhase } = useForma();
+  const { nodes, selectedNodeId, appPhase, comparisonMode } = useForma();
   const selected = nodes.find((n) => n.id === selectedNodeId) ?? null;
 
   if (appPhase === "upload" || appPhase === "processing") {
@@ -49,13 +50,21 @@ function Index() {
       <ScenarioTabBar />
       <div className="flex min-h-0 flex-1">
         <AgentPanel />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <main className="relative min-h-0 flex-1">
-            {nodes.length === 0 ? <EmptyDropZone /> : <Canvas />}
+        {comparisonMode ? (
+          <main className="relative min-h-0 flex-1 overflow-hidden">
+            <ScenarioCompare />
           </main>
-          <ChatBar />
-        </div>
-        {selected && <NodeDetail node={selected} />}
+        ) : (
+          <>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <main className="relative min-h-0 flex-1">
+                {nodes.length === 0 ? <EmptyDropZone /> : <Canvas />}
+              </main>
+              <ChatBar />
+            </div>
+            {selected && <NodeDetail node={selected} />}
+          </>
+        )}
       </div>
     </div>
   );
