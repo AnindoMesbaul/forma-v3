@@ -56,6 +56,9 @@ interface FormaState {
   switchScenario: (id: string) => void;
   renameScenario: (id: string, name: string) => void;
   deleteScenario: (id: string) => void;
+
+  comparisonMode: boolean;
+  setComparisonMode: (v: boolean) => void;
 }
 
 function mirror(scenarios: Scenario[], activeId: string) {
