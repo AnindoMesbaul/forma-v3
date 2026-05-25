@@ -117,20 +117,6 @@ export function TopBar() {
           </>
         )}
 
-        <button onClick={() => inputRef.current?.click()} className={ctaBtn}>
-          Upload CSV
-        </button>
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".csv"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleFileLoad(f, loadCsv);
-            e.target.value = "";
-          }}
-        />
       </div>
     </header>
   );
