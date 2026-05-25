@@ -200,11 +200,23 @@ export function ScenarioCompare() {
                 ))}
               </Row>
               <Row label="Layers">
-                {all.map(({ scenario, metrics, isBase }) => (
-                  <Cell key={scenario.id}>
-                    {renderCount(metrics.layers, baseMetrics.layers, isBase, true)}
-                  </Cell>
-                ))}
+                {all.map(({ scenario, metrics, isBase }) => {
+                  const delta = metrics.layers - baseMetrics.layers;
+                  return (
+                    <Cell key={scenario.id}>
+                      <span>{metrics.layers}</span>
+                      {!isBase &&
+                        (delta === 0 ? (
+                          <DeltaBadge text="—" tone="neutral" />
+                        ) : (
+                          <DeltaBadge
+                            text={delta > 0 ? `+${delta}` : `−${Math.abs(delta)}`}
+                            tone={delta < 0 ? "good" : "bad"}
+                          />
+                        ))}
+                    </Cell>
+                  );
+                })}
               </Row>
               <Row label="Avg span">
                 {all.map(({ scenario, metrics, isBase }) => {
