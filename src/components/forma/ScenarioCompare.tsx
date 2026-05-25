@@ -147,24 +147,6 @@ export function ScenarioCompare() {
     isBase: i === 0,
   }));
 
-  const renderCount = (val: number, baseVal: number, isBase: boolean, invertGood = false) => {
-    if (isBase) return <span>{val}</span>;
-    const delta = val - baseVal;
-    let tone: DeltaTone = "neutral";
-    if (delta !== 0 && invertGood !== undefined) {
-      if (invertGood) tone = delta < 0 ? "good" : "bad";
-    }
-    return (
-      <>
-        <span>{val}</span>
-        {delta === 0 ? (
-          <DeltaBadge text="—" tone="neutral" />
-        ) : (
-          <DeltaBadge text={delta > 0 ? `+${delta}` : `−${Math.abs(delta)}`} tone={tone} />
-        )}
-      </>
-    );
-  };
 
   return (
     <div className="h-full w-full overflow-auto bg-canvas p-8">
