@@ -83,6 +83,7 @@ function updateActive(
 }
 
 export const useForma = create<FormaState>((set, get) => ({
+  ...({} as Record<string, never>),
   fileName: null,
   nodes: [],
   proposals: [],
