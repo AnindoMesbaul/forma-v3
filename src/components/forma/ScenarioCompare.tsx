@@ -1,6 +1,6 @@
 import { useForma } from "@/lib/forma/store";
-import { computeStats } from "@/lib/forma/org";
-import type { OrgNode } from "@/lib/forma/types";
+import { computeStats, buildPositionViews } from "@/lib/forma/org";
+import type { PositionView } from "@/lib/forma/types";
 
 interface ScenarioMetrics {
   headcount: number;
@@ -17,8 +17,8 @@ interface ScenarioMetrics {
 }
 
 function computeScenarioMetrics(
-  nodes: OrgNode[],
-  baseNodes: OrgNode[],
+  nodes: PositionView[],
+  baseNodes: PositionView[],
   isBase: boolean,
 ): ScenarioMetrics {
   const stats = computeStats(nodes);
@@ -140,12 +140,16 @@ export function ScenarioCompare() {
   const { scenarios } = useForma();
   if (scenarios.length < 2) return null;
   const base = scenarios[0];
-  const baseMetrics = computeScenarioMetrics(base.nodes, base.nodes, true);
-  const all = scenarios.map((s, i) => ({
-    scenario: s,
-    metrics: computeScenarioMetrics(s.nodes, base.nodes, i === 0),
-    isBase: i === 0,
-  }));
+  const baseViews = buildPositionViews(base.positions, base.persons, base.assignments);
+  const baseMetrics = computeScenarioMetrics(baseViews, baseViews, true);
+  const all = scenarios.map((s, i) => {
+    const views = i === 0 ? baseViews : buildPositionViews(s.positions, s.persons, s.assignments);
+    return {
+      scenario: s,
+      metrics: computeScenarioMetrics(views, baseViews, i === 0),
+      isBase: i === 0,
+    };
+  });
 
 
   return (

@@ -10,6 +10,8 @@ export interface OrgNodeData {
   isSelected: boolean;
   isFocused: boolean;
   isDimmed: boolean;
+  isVacant: boolean;
+  status: "filled" | "vacant" | "proposed";
 }
 
 export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
@@ -20,6 +22,12 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
   if (violation) {
     containerClass =
       "border-violation bg-violation-bg shadow-[0_2px_8px_rgba(139,47,38,0.10)]";
+  }
+  if (data.isVacant || data.status === "vacant") {
+    containerClass = "border-dashed border-chalk bg-canvas opacity-80";
+  }
+  if (data.status === "proposed") {
+    containerClass = "border-dashed border-borderline bg-borderline-bg";
   }
   if (data.isAiTarget || data.isFocused) {
     containerClass =
@@ -45,6 +53,11 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
           <div className="mt-0.5 truncate text-[12px] text-slate">
             {data.title}
           </div>
+          {data.isVacant && (
+            <span className="mt-0.5 inline-block rounded-[4px] bg-chalk px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-slate">
+              Vacant
+            </span>
+          )}
         </div>
       </div>
       <div className="mt-2.5 flex items-center justify-between">

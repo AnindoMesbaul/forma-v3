@@ -27,7 +27,7 @@ export function ScenarioTabBar() {
           name={s.name}
           isActive={s.id === activeScenarioId}
           isBase={i === 0}
-          delta={i === 0 ? 0 : s.nodes.length - base.nodes.length}
+          delta={i === 0 ? 0 : s.positions.length - base.positions.length}
           onSelect={() => switchScenario(s.id)}
           onRename={(name) => renameScenario(s.id, name)}
           onDelete={() => deleteScenario(s.id)}
