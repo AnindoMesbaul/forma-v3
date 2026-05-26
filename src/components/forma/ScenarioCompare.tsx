@@ -1,6 +1,6 @@
 import { useForma } from "@/lib/forma/store";
-import { computeStats } from "@/lib/forma/org";
-import type { OrgNode } from "@/lib/forma/types";
+import { computeStats, buildPositionViews } from "@/lib/forma/org";
+import type { PositionView } from "@/lib/forma/types";
 
 interface ScenarioMetrics {
   headcount: number;
