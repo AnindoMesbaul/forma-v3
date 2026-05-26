@@ -23,6 +23,12 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
     containerClass =
       "border-violation bg-violation-bg shadow-[0_2px_8px_rgba(139,47,38,0.10)]";
   }
+  if (data.isVacant || data.status === "vacant") {
+    containerClass = "border-dashed border-chalk bg-canvas opacity-80";
+  }
+  if (data.status === "proposed") {
+    containerClass = "border-dashed border-borderline bg-borderline-bg";
+  }
   if (data.isAiTarget || data.isFocused) {
     containerClass =
       "border-ai border-dashed bg-ai-bg shadow-[0_2px_8px_rgba(61,58,158,0.07)]";
