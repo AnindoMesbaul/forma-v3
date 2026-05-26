@@ -82,7 +82,31 @@ function updateActive(
   return { scenarios, ...mirror(scenarios, state.activeScenarioId) };
 }
 
-export const useForma = create<FormaState>((set, get) => ({
+export const useForma = create<FormaState>((set, get) => {
+  const forkIfBase = () => {
+    const state = get();
+    if (state.scenarios.length === 0) return;
+    const base = state.scenarios[0];
+    if (!base) return;
+    if (state.activeScenarioId !== base.id) return;
+    const scenario: Scenario = {
+      id: crypto.randomUUID(),
+      name: `Option ${String.fromCharCode(64 + state.scenarios.length)}`,
+      nodes: base.nodes.map((n) => ({ ...n })),
+      proposals: [...base.proposals],
+      changeLog: [],
+      rejectedSignatures: [...base.rejectedSignatures],
+      chat: [...base.chat],
+    };
+    const scenarios = [...state.scenarios, scenario];
+    set({
+      scenarios,
+      activeScenarioId: scenario.id,
+      ...mirror(scenarios, scenario.id),
+    });
+  };
+
+  return {
   fileName: null,
   nodes: [],
   proposals: [],
@@ -157,6 +181,7 @@ export const useForma = create<FormaState>((set, get) => ({
   selectNode: (id) => set({ selectedNodeId: id }),
 
   reparent: (nodeId, newManagerId) => {
+    forkIfBase();
     set((state) =>
       updateActive(state, (s) => {
         const nodes = applyOps(s.nodes, [
@@ -180,6 +205,7 @@ export const useForma = create<FormaState>((set, get) => ({
   },
 
   updateNode: (nodeId, patch) => {
+    forkIfBase();
     set((state) =>
       updateActive(state, (s) => ({
         nodes: applyOps(s.nodes, [{ type: "update", nodeId, patch }]),
@@ -195,6 +221,7 @@ export const useForma = create<FormaState>((set, get) => ({
     ),
 
   acceptProposal: (id) => {
+    forkIfBase();
     const p = get().proposals.find((x) => x.id === id);
     if (!p) return;
     set((state) => ({
@@ -306,4 +333,5 @@ export const useForma = create<FormaState>((set, get) => ({
       ...mirror(scenarios, base.id),
     });
   },
-}));
+  };
+});
