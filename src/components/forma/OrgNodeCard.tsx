@@ -53,6 +53,11 @@ export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
           <div className="mt-0.5 truncate text-[12px] text-slate">
             {data.title}
           </div>
+          {data.isVacant && (
+            <span className="mt-0.5 inline-block rounded-[4px] bg-chalk px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-slate">
+              Vacant
+            </span>
+          )}
         </div>
       </div>
       <div className="mt-2.5 flex items-center justify-between">
