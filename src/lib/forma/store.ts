@@ -9,12 +9,26 @@ import type {
   EmployeeRecord,
   UploadedFile,
   Scenario,
+  Position,
+  Person,
+  Assignment,
+  PositionView,
 } from "./types";
-import { applyOps, computeDerived, opsSignature } from "./org";
+import {
+  applyOps,
+  computeDerived,
+  opsSignature,
+  buildPositionViews,
+  applyOpsToScenario,
+  migrateNodesToCollections,
+} from "./org";
 
 interface FormaState {
   fileName: string | null;
-  nodes: OrgNode[];
+  nodes: PositionView[];
+  positions: Position[];
+  persons: Person[];
+  assignments: Assignment[];
   proposals: Proposal[];
   changeLog: ChangeLogEntry[];
   rejectedSignatures: string[];
@@ -63,8 +77,14 @@ interface FormaState {
 
 function mirror(scenarios: Scenario[], activeId: string) {
   const s = scenarios.find((x) => x.id === activeId);
+  const positions = s?.positions ?? [];
+  const persons = s?.persons ?? [];
+  const assignments = s?.assignments ?? [];
   return {
-    nodes: s?.nodes ?? [],
+    positions,
+    persons,
+    assignments,
+    nodes: buildPositionViews(positions, persons, assignments),
     proposals: s?.proposals ?? [],
     changeLog: s?.changeLog ?? [],
     rejectedSignatures: s?.rejectedSignatures ?? [],
@@ -92,7 +112,9 @@ export const useForma = create<FormaState>((set, get) => {
     const scenario: Scenario = {
       id: crypto.randomUUID(),
       name: `Option ${String.fromCharCode(64 + state.scenarios.length)}`,
-      nodes: base.nodes.map((n) => ({ ...n })),
+      positions: base.positions.map((p) => ({ ...p })),
+      persons: base.persons.map((p) => ({ ...p })),
+      assignments: base.assignments.map((a) => ({ ...a })),
       proposals: [...base.proposals],
       changeLog: [],
       rejectedSignatures: [...base.rejectedSignatures],
@@ -109,6 +131,9 @@ export const useForma = create<FormaState>((set, get) => {
   return {
   fileName: null,
   nodes: [],
+  positions: [],
+  persons: [],
+  assignments: [],
   proposals: [],
   changeLog: [],
   rejectedSignatures: [],
@@ -143,6 +168,9 @@ export const useForma = create<FormaState>((set, get) => {
       uploadedFiles: [],
       employeeRecords: [],
       nodes: [],
+      positions: [],
+      persons: [],
+      assignments: [],
       proposals: [],
       changeLog: [],
       rejectedSignatures: [],
@@ -158,10 +186,13 @@ export const useForma = create<FormaState>((set, get) => {
   focusProposal: (id) => set({ focusedProposalId: id }),
 
   loadCsv: (fileName, nodes) => {
+    const { positions, persons, assignments } = migrateNodesToCollections(nodes);
     const base: Scenario = {
       id: crypto.randomUUID(),
       name: "Base",
-      nodes: computeDerived(nodes),
+      positions,
+      persons,
+      assignments,
       proposals: [],
       changeLog: [],
       rejectedSignatures: [],
@@ -184,16 +215,18 @@ export const useForma = create<FormaState>((set, get) => {
     forkIfBase();
     set((state) =>
       updateActive(state, (s) => {
-        const nodes = applyOps(s.nodes, [
+        const result = applyOpsToScenario(s.positions, s.persons, s.assignments, [
           { type: "reparent", nodeId, newManagerId },
         ]);
+        const views = buildPositionViews(result.positions, result.persons, result.assignments);
+        const moved = views.find((v) => v.id === nodeId);
         return {
-          nodes,
+          ...result,
           changeLog: [
             {
               id: crypto.randomUUID(),
               ts: Date.now(),
-              action: `Reparented ${nodes.find((n) => n.id === nodeId)?.name ?? nodeId}`,
+              action: `Reparented ${moved?.name ?? nodeId}`,
               initiator: "user",
               status: "accepted",
             },
@@ -207,9 +240,12 @@ export const useForma = create<FormaState>((set, get) => {
   updateNode: (nodeId, patch) => {
     forkIfBase();
     set((state) =>
-      updateActive(state, (s) => ({
-        nodes: applyOps(s.nodes, [{ type: "update", nodeId, patch }]),
-      })),
+      updateActive(state, (s) => {
+        const result = applyOpsToScenario(s.positions, s.persons, s.assignments, [
+          { type: "update", nodeId, patch },
+        ]);
+        return result;
+      }),
     );
   },
 
@@ -227,20 +263,23 @@ export const useForma = create<FormaState>((set, get) => {
     set((state) => ({
       focusedProposalId:
         state.focusedProposalId === id ? null : state.focusedProposalId,
-      ...updateActive(state, (s) => ({
-        nodes: applyOps(s.nodes, p.ops),
-        proposals: s.proposals.filter((x) => x.id !== id),
-        changeLog: [
-          {
-            id: crypto.randomUUID(),
-            ts: Date.now(),
-            action: p.summary,
-            initiator: p.source,
-            status: "accepted",
-          },
-          ...s.changeLog,
-        ],
-      })),
+      ...updateActive(state, (s) => {
+        const result = applyOpsToScenario(s.positions, s.persons, s.assignments, p.ops);
+        return {
+          ...result,
+          proposals: s.proposals.filter((x) => x.id !== id),
+          changeLog: [
+            {
+              id: crypto.randomUUID(),
+              ts: Date.now(),
+              action: p.summary,
+              initiator: p.source,
+              status: "accepted",
+            },
+            ...s.changeLog,
+          ],
+        };
+      }),
     }));
   },
 
@@ -277,12 +316,13 @@ export const useForma = create<FormaState>((set, get) => {
     const active = state.scenarios.find((s) => s.id === state.activeScenarioId);
     if (!active) return;
     const count = state.scenarios.length;
-    const autoName =
-      name ?? `Option ${String.fromCharCode(64 + count)}`; // count=1 -> "A"
+    const autoName = name ?? `Option ${String.fromCharCode(64 + count)}`;
     const scenario: Scenario = {
       id: crypto.randomUUID(),
       name: autoName,
-      nodes: active.nodes.map((n) => ({ ...n })),
+      positions: active.positions.map((p) => ({ ...p })),
+      persons: active.persons.map((p) => ({ ...p })),
+      assignments: active.assignments.map((a) => ({ ...a })),
       proposals: [],
       changeLog: [],
       rejectedSignatures: [],
@@ -322,7 +362,7 @@ export const useForma = create<FormaState>((set, get) => {
   deleteScenario: (id) => {
     const state = get();
     const idx = state.scenarios.findIndex((s) => s.id === id);
-    if (idx <= 0) return; // cannot delete base
+    if (idx <= 0) return;
     const scenarios = state.scenarios.filter((s) => s.id !== id);
     const base = scenarios[0];
     set({
