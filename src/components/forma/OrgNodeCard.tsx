@@ -10,6 +10,8 @@ export interface OrgNodeData {
   isSelected: boolean;
   isFocused: boolean;
   isDimmed: boolean;
+  isVacant: boolean;
+  status: "filled" | "vacant" | "proposed";
 }
 
 export function OrgNodeCard({ data }: NodeProps<OrgNodeData>) {
