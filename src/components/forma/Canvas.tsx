@@ -62,6 +62,8 @@ function CanvasInner() {
           isSelected: selectedNodeId === n.id,
           isFocused: focusedIds.has(n.id),
           isDimmed: focusedIds.size > 0 && !focusedIds.has(n.id),
+          isVacant: n.isVacant,
+          status: n.status,
         },
         draggable: true,
       })),
