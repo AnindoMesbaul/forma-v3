@@ -257,12 +257,11 @@ export const useForma = create<FormaState>((set, get) => {
     ),
 
   acceptProposal: (id) => {
-    forkIfBase();
     const p = get().proposals.find((x) => x.id === id);
     if (!p) return;
+    forkIfBase();
     set((state) => ({
-      focusedProposalId:
-        state.focusedProposalId === id ? null : state.focusedProposalId,
+      focusedProposalId: null,
       ...updateActive(state, (s) => {
         const result = applyOpsToScenario(s.positions, s.persons, s.assignments, p.ops);
         return {
@@ -287,8 +286,7 @@ export const useForma = create<FormaState>((set, get) => {
     const p = get().proposals.find((x) => x.id === id);
     if (!p) return;
     set((state) => ({
-      focusedProposalId:
-        state.focusedProposalId === id ? null : state.focusedProposalId,
+      focusedProposalId: null,
       ...updateActive(state, (s) => ({
         proposals: s.proposals.filter((x) => x.id !== id),
         rejectedSignatures: [...s.rejectedSignatures, opsSignature(p.ops)],
