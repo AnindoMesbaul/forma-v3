@@ -17,8 +17,8 @@ interface ScenarioMetrics {
 }
 
 function computeScenarioMetrics(
-  nodes: OrgNode[],
-  baseNodes: OrgNode[],
+  nodes: PositionView[],
+  baseNodes: PositionView[],
   isBase: boolean,
 ): ScenarioMetrics {
   const stats = computeStats(nodes);
