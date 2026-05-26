@@ -93,7 +93,7 @@ export const useForma = create<FormaState>((set, get) => {
       id: crypto.randomUUID(),
       name: `Option ${String.fromCharCode(64 + state.scenarios.length)}`,
       nodes: base.nodes.map((n) => ({ ...n })),
-      proposals: [],
+      proposals: [...base.proposals],
       changeLog: [],
       rejectedSignatures: [...base.rejectedSignatures],
       chat: [...base.chat],
