@@ -94,7 +94,9 @@ export type AppPhase = "upload" | "processing" | "reviewing" | "canvas";
 export interface Scenario {
   id: string;
   name: string;
-  nodes: OrgNode[];
+  positions: Position[];
+  persons: Person[];
+  assignments: Assignment[];
   proposals: Proposal[];
   changeLog: ChangeLogEntry[];
   rejectedSignatures: string[];
