@@ -76,6 +76,16 @@ export function NodeDetail({ node }: { node: PositionView }) {
       <div className="flex-1 overflow-y-auto p-3">
         <h2 className="font-display text-[20px] font-light leading-tight text-ink">{node.name}</h2>
         <p className="text-sm text-slate">{node.title}</p>
+        {node.isVacant && (
+          <span className="mt-1 inline-block rounded-[4px] bg-chalk px-2 py-px text-[11px] font-medium uppercase tracking-wide text-slate">
+            Vacant
+          </span>
+        )}
+        {node.status === "proposed" && (
+          <span className="mt-1 inline-block rounded-[4px] bg-borderline-bg px-2 py-px text-[11px] font-medium uppercase tracking-wide text-borderline">
+            Proposed
+          </span>
+        )}
 
         <div className="mt-3 flex flex-col divide-y divide-border border-y border-border">
           <EditableField
