@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForma } from "@/lib/forma/store";
-import { getChildren } from "@/lib/forma/org";
-import type { OrgNode } from "@/lib/forma/types";
+import type { PositionView } from "@/lib/forma/types";
 
 function EditableField({
   label,
