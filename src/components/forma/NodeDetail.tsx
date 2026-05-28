@@ -112,31 +112,54 @@ export function NodeDetail({ node }: { node: PositionView }) {
               onSave={(v) => updateNode(node.id, { location: v })}
             />
           )}
+          <div className="flex items-center justify-between py-1.5">
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Type</span>
+            <span className="text-sm text-foreground">{node.headcountType}</span>
+          </div>
+          {node.fte !== 1 && (
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">FTE</span>
+              <span className="text-sm tabular-nums text-foreground">{node.fte}</span>
+            </div>
+          )}
           {node.salary !== undefined && (
             <div className="flex items-center justify-between py-1.5">
               <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Salary
+                Actual salary
               </span>
               <span className="text-sm tabular-nums text-foreground">
                 ${node.salary.toLocaleString()}
               </span>
             </div>
           )}
+          {node.budgetedSalary !== undefined && (
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                Budgeted salary
+              </span>
+              <span
+                className={`text-sm tabular-nums ${
+                  node.salary !== undefined && node.salary > node.budgetedSalary
+                    ? "text-violation"
+                    : "text-foreground"
+                }`}
+              >
+                ${node.budgetedSalary.toLocaleString()}
+                {node.salary !== undefined && node.salary > node.budgetedSalary && (
+                  <span className="ml-1 text-[11px]">
+                    +${(node.salary - node.budgetedSalary).toLocaleString()} over
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Span
-            </span>
-            <span className="text-sm tabular-nums text-foreground">
-              {node.span ?? 0}
-            </span>
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Span</span>
+            <span className="text-sm tabular-nums text-foreground">{node.span ?? 0}</span>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Depth
-            </span>
-            <span className="text-sm tabular-nums text-foreground">
-              {node.depth ?? 0}
-            </span>
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Depth</span>
+            <span className="text-sm tabular-nums text-foreground">{node.depth ?? 0}</span>
           </div>
         </div>
 
