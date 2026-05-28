@@ -55,9 +55,9 @@ function EditableField({
   );
 }
 
-export function NodeDetail({ node }: { node: OrgNode }) {
+export function NodeDetail({ node }: { node: PositionView }) {
   const { nodes, updateNode, selectNode, setPrefill } = useForma();
-  const reports = getChildren(nodes, node.id);
+  const reports = nodes.filter((n) => n.manager === node.id);
 
   return (
     <aside className="flex h-full w-[304px] shrink-0 flex-col border-l border-chalk bg-canvas">
