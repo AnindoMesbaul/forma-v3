@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForma } from "@/lib/forma/store";
-import { getChildren } from "@/lib/forma/org";
-import type { OrgNode } from "@/lib/forma/types";
+import type { PositionView } from "@/lib/forma/types";
 
 function EditableField({
   label,
@@ -56,9 +55,9 @@ function EditableField({
   );
 }
 
-export function NodeDetail({ node }: { node: OrgNode }) {
+export function NodeDetail({ node }: { node: PositionView }) {
   const { nodes, updateNode, selectNode, setPrefill } = useForma();
-  const reports = getChildren(nodes, node.id);
+  const reports = nodes.filter((n) => n.manager === node.id);
 
   return (
     <aside className="flex h-full w-[304px] shrink-0 flex-col border-l border-chalk bg-canvas">
@@ -77,6 +76,16 @@ export function NodeDetail({ node }: { node: OrgNode }) {
       <div className="flex-1 overflow-y-auto p-3">
         <h2 className="font-display text-[20px] font-light leading-tight text-ink">{node.name}</h2>
         <p className="text-sm text-slate">{node.title}</p>
+        {node.isVacant && (
+          <span className="mt-1 inline-block rounded-[4px] bg-chalk px-2 py-px text-[11px] font-medium uppercase tracking-wide text-slate">
+            Vacant
+          </span>
+        )}
+        {node.status === "proposed" && (
+          <span className="mt-1 inline-block rounded-[4px] bg-borderline-bg px-2 py-px text-[11px] font-medium uppercase tracking-wide text-borderline">
+            Proposed
+          </span>
+        )}
 
         <div className="mt-3 flex flex-col divide-y divide-border border-y border-border">
           <EditableField
@@ -103,31 +112,54 @@ export function NodeDetail({ node }: { node: OrgNode }) {
               onSave={(v) => updateNode(node.id, { location: v })}
             />
           )}
+          <div className="flex items-center justify-between py-1.5">
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Type</span>
+            <span className="text-sm text-foreground">{node.headcountType}</span>
+          </div>
+          {node.fte !== 1 && (
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">FTE</span>
+              <span className="text-sm tabular-nums text-foreground">{node.fte}</span>
+            </div>
+          )}
           {node.salary !== undefined && (
             <div className="flex items-center justify-between py-1.5">
               <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Salary
+                Actual salary
               </span>
               <span className="text-sm tabular-nums text-foreground">
                 ${node.salary.toLocaleString()}
               </span>
             </div>
           )}
+          {node.budgetedSalary !== undefined && (
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                Budgeted salary
+              </span>
+              <span
+                className={`text-sm tabular-nums ${
+                  node.salary !== undefined && node.salary > node.budgetedSalary
+                    ? "text-violation"
+                    : "text-foreground"
+                }`}
+              >
+                ${node.budgetedSalary.toLocaleString()}
+                {node.salary !== undefined && node.salary > node.budgetedSalary && (
+                  <span className="ml-1 text-[11px]">
+                    +${(node.salary - node.budgetedSalary).toLocaleString()} over
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Span
-            </span>
-            <span className="text-sm tabular-nums text-foreground">
-              {node.span ?? 0}
-            </span>
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Span</span>
+            <span className="text-sm tabular-nums text-foreground">{node.span ?? 0}</span>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Depth
-            </span>
-            <span className="text-sm tabular-nums text-foreground">
-              {node.depth ?? 0}
-            </span>
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">Depth</span>
+            <span className="text-sm tabular-nums text-foreground">{node.depth ?? 0}</span>
           </div>
         </div>
 
