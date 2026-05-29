@@ -70,7 +70,14 @@ export function applyOpsToScenario(
   let nextPer = persons.map((p) => ({ ...p }));
   let nextAss = assignments.map((a) => ({ ...a }));
   for (const op of ops) {
+    // Rebuild the ID set each iteration so creates/deletes are reflected immediately.
+    const ids = new Set(nextPos.map((p) => p.id));
+
     if (op.type === "reparent") {
+      // Skip entirely if the node to move doesn't exist.
+      if (!ids.has(op.nodeId)) continue;
+      // Skip entirely if the target manager ID doesn't exist (null is always valid).
+      if (op.newManagerId !== null && !ids.has(op.newManagerId)) continue;
       nextPos = nextPos.map((p) =>
         p.id === op.nodeId ? { ...p, managerPositionId: op.newManagerId } : p,
       );
