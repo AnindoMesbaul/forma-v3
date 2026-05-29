@@ -46,9 +46,10 @@ export function parseOrgCsv(text: string): OrgNode[] {
   const rows = result.data.filter((r) => r.name && r.name.trim());
 
   const taken = new Set<string>();
-  const nameToId = new Map<string, string>();
+  const nameToId = new Map<string, string>(); // keyed by lowercased name
+
   for (const r of rows) {
-    nameToId.set(r.name.trim(), slugify(r.name.trim(), taken));
+    nameToId.set(r.name.trim().toLowerCase(), slugify(r.name.trim(), taken));
   }
 
   const nodes: OrgNode[] = rows.map((r) => {
@@ -56,9 +57,9 @@ export function parseOrgCsv(text: string): OrgNode[] {
     const managerName = (r.manager ?? "").trim();
     const salaryRaw = (r.salary ?? "").trim();
     return {
-      id: nameToId.get(name)!,
+      id: nameToId.get(name.toLowerCase())!,
       name,
-      manager: managerName ? nameToId.get(managerName) ?? null : null,
+      manager: managerName ? (nameToId.get(managerName.toLowerCase()) ?? null) : null,
       title: (r.title ?? "").trim(),
       department: (r.department ?? "").trim(),
       grade: (r.grade ?? "").trim() || undefined,
