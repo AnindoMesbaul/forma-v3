@@ -70,18 +70,30 @@ export function applyOpsToScenario(
   let nextPer = persons.map((p) => ({ ...p }));
   let nextAss = assignments.map((a) => ({ ...a }));
   for (const op of ops) {
+    // Rebuild the ID set each iteration so creates/deletes are reflected immediately.
+    const ids = new Set(nextPos.map((p) => p.id));
+
     if (op.type === "reparent") {
+      // Skip entirely if the node to move doesn't exist.
+      if (!ids.has(op.nodeId)) continue;
+      // Skip entirely if the target manager ID doesn't exist (null is always valid).
+      if (op.newManagerId !== null && !ids.has(op.newManagerId)) continue;
       nextPos = nextPos.map((p) =>
         p.id === op.nodeId ? { ...p, managerPositionId: op.newManagerId } : p,
       );
     } else if (op.type === "update") {
+      if (!ids.has(op.nodeId)) continue;
       const patch = op.patch ?? {};
       const posKeys: string[] = ["title", "department", "grade", "status", "headcountType", "budgetedSalary"];
       const perKeys: string[] = ["name", "location", "actualSalary", "notes"];
       if ("manager" in patch) {
-        nextPos = nextPos.map((p) =>
-          p.id === op.nodeId ? { ...p, managerPositionId: (patch as Record<string, unknown>).manager as string | null } : p,
-        );
+        const newMgr = (patch as Record<string, unknown>).manager as string | null;
+        // Only apply the manager change if the target actually exists.
+        if (newMgr === null || ids.has(newMgr)) {
+          nextPos = nextPos.map((p) =>
+            p.id === op.nodeId ? { ...p, managerPositionId: newMgr } : p,
+          );
+        }
       }
       const posPatch = Object.fromEntries(Object.entries(patch).filter(([k]) => posKeys.includes(k)));
       if (Object.keys(posPatch).length) {
@@ -95,21 +107,29 @@ export function applyOpsToScenario(
         }
       }
     } else if (op.type === "delete") {
+      if (!ids.has(op.nodeId)) continue;
       const target = nextPos.find((p) => p.id === op.nodeId);
-      const newParent = target?.managerPositionId ?? null;
+      const rawParent = target?.managerPositionId ?? null;
+      // Only preserve the parent link if the parent itself still exists.
+      const validParent = rawParent !== null && ids.has(rawParent) ? rawParent : null;
       nextPos = nextPos
         .filter((p) => p.id !== op.nodeId)
-        .map((p) => (p.managerPositionId === op.nodeId ? { ...p, managerPositionId: newParent } : p));
+        .map((p) =>
+          p.managerPositionId === op.nodeId ? { ...p, managerPositionId: validParent } : p,
+        );
       nextAss = nextAss.filter((a) => a.positionId !== op.nodeId);
     } else if (op.type === "create") {
       const node = op.node;
       if (!nextPos.find((p) => p.id === node.id)) {
+        // If the AI gave a manager ID that doesn't exist, place at root rather than floating.
+        const resolvedManager =
+          node.manager !== null && ids.has(node.manager) ? node.manager : null;
         nextPos.push({
           id: node.id,
           title: node.title,
           department: node.department,
           grade: node.grade,
-          managerPositionId: node.manager,
+          managerPositionId: resolvedManager,
           budgetedSalary: node.salary,
           headcountType: "FTE",
           status: node.name ? "filled" : "vacant",
