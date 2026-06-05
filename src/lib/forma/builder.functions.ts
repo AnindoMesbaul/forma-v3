@@ -52,7 +52,7 @@ export const buildOrgFromFiles = createServerFn({ method: "POST" })
     const userPrompt = `Extract a unified employee list from these files.\n\n${data.files
       .map(
         (f) =>
-          `=== FILE: ${f.name} ===\n${f.content.slice(0, 30000)}`,
+          `=== FILE: ${f.name} ===\n${f.content.slice(0, 200000)}`,
       )
       .join("\n\n")}`;
 
